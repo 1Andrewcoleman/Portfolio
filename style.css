@@ -400,7 +400,7 @@ hr {
 }
 
 /* Begin Media Queries*/
-@media screen and (max-width: 850px) {
+@media screen and (max-width: 768px) {
   .contact-wrapper {
     display: flex;
     flex-direction: column;
@@ -413,7 +413,7 @@ hr {
 
   .direct-contact-container {
     margin-top: 60px;
-    max-width: 300px;
+    max-width: 200px;
   }
 
   .social-media-list li {
@@ -426,10 +426,18 @@ hr {
     width: 60px;
     height: 60px;
     line-height: 60px;
+
+  }
+  .list-item {
+    font-size: 1.4rem;
+  }
+  .contact-text {
+    font-size: 1.5rem;
+    margin-left: 20px;
   }
 }
 
-@media screen and (max-width: 569px) {
+@media screen and (max-width: 768px) {
 
   .direct-contact-container,
   .form-wrapper {
@@ -446,23 +454,24 @@ hr {
   .name,
   .email,
   textarea {
-    width: 280px;
+    width: 260px;
   }
 
   .direct-contact-container {
     margin-top: 60px;
-    max-width: 280px;
+    max-width: 260px;
   }
 
   .social-media-list {
     left: 0;
+    font-size: 5vw;
   }
 
   .social-media-list li {
     height: 55px;
     width: 55px;
     line-height: 55px;
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .social-media-list li:after {
@@ -473,7 +482,7 @@ hr {
 
 }
 
-@media screen and (max-width: 410px) {
+@media screen and (max-width: 768px) {
   .send-button {
     width: 99%;
   }
