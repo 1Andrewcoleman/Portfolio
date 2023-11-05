@@ -25,13 +25,6 @@ canvas {
   z-index: -1;
 }
 
-#starfield {
-  width: 100vw;
-  height: 100vh;
-  display: block;
-}
-
-
 .landing-page, #resume, #research, #contact {
   position: relative;
   z-index: 1;
@@ -1476,11 +1469,11 @@ button:hover {
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
     .box {
-        width: 64vw; /* Adjusted to viewport width */
+        width: 60vw; /* Adjusted to viewport width */
         height: 18vh; /* Adjusted to viewport height */
     }
     .gallery {
-        gap: 2vh; /* Adjust the gap between boxes */
+        gap: 1.5vh; /* Adjust the gap between boxes */
         grid-template-columns: 1fr;
     }
 
@@ -1506,7 +1499,7 @@ button:hover {
 
     .description p {
         font-size: .7rem;
-        max-width: 210px;    
+        max-width: 228px;    
       }
 
     .description button{
