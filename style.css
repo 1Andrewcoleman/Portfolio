@@ -436,6 +436,9 @@ hr {
     font-size: 1.5rem;
     margin-left: 20px;
   }
+  .section-header {
+    font-size: 2rem;
+  }
 }
 
 @media screen and (max-width: 768px) {
@@ -449,6 +452,8 @@ hr {
   .form-control,
   textarea {
     margin: 0 auto;
+    max-width: 300px;
+    margin-right: 76px;
   }
 
 
