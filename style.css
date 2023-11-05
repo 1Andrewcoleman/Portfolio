@@ -13,7 +13,6 @@ body {
   color: #FFFFFF !important;
   height: 100% !important;
   overflow: hidden;
-  font-size: 22px;
   justify-content: center;
   font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace, sans-serif;
 }
@@ -436,7 +435,7 @@ hr {
     font-size: 1.5rem;
     margin-left: 20px;
   }
-  .section-header {
+  #contact h1 {
     font-size: 2rem;
   }
 }
