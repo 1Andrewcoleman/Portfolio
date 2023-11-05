@@ -17,6 +17,7 @@ body {
   justify-content: center;
   font-family: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace, sans-serif;
 }
+
 canvas {
   background: radial-gradient(ellipse at bottom, #0c1116 0%, #161927 100%);
   position: fixed;
