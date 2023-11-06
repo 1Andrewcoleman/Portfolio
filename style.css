@@ -297,7 +297,7 @@ textarea {
 }
 .direct-contact-container,
 .form-horizontal {
-  width: 100%; /* Full width on mobile */
+  width: 900px;
   padding: 0 15px; /* Add padding on the sides */
 }
 
@@ -397,6 +397,10 @@ textarea {
 
 .social-media-list li:hover a {
   color: #000;
+}
+
+.form-control{
+  padding: 15px 155px;
 }
 
 
