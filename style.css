@@ -405,7 +405,7 @@ hr {
 
 /* Begin Media Queries*/
 @media screen and (max-width: 768px) {
-  
+
   #contact {
     height: 96vh;
   }
@@ -702,6 +702,7 @@ hr {
     #about-me .text-container {
         order: 2;
         align-items: center; /* Center align the text-container items */
+        height: 24vh;
     }
 
     #about-me .text-container h1 {
