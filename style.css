@@ -295,6 +295,11 @@ textarea {
   max-width: 400px;
   margin-left: 50px;
 }
+.direct-contact-container,
+.form-horizontal {
+  width: 100%; /* Full width on mobile */
+  padding: 0 15px; /* Add padding on the sides */
+}
 
 /* Location, Phone, Email Section */
 .contact-list {
