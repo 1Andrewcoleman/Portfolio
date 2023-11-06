@@ -410,6 +410,18 @@ hr {
 
 /* Begin Media Queries*/
 @media screen and (max-width: 768px) {
+  #contact {
+    display: flex;
+    flex-direction: column;
+    /* Align children vertically */
+    justify-content: center;
+    /* Center children vertically */
+    align-items: center;
+    /* Center children horizontally */
+    height: 96vh;
+    /* Full viewport height */
+    width: 100%;
+  }
   .contact-wrapper {
     display: flex;
     flex-direction: column;
