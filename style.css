@@ -462,6 +462,9 @@ hr {
   textarea {
     width: 260px;
   }
+  textarea.form-control {
+    height: 190px;
+  }
 
   .direct-contact-container {
     margin-top: 10px;
