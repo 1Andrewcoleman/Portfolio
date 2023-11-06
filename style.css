@@ -1349,11 +1349,8 @@ hr {
     font-size: 14px;
 }
 
-.portfolio h1 {
-  margin-top: 50px;
-  font-size: 7rem;
-  color: #000000;
-  text-align: center;
+#portfolio h1 {
+  font-size: 4rem;
 }
 
 .info-card {
