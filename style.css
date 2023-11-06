@@ -408,7 +408,7 @@ hr {
 
   .direct-contact-container,
   .form-horizontal {
-    width: 100%; /* Full width on mobile */
+    width: 93%; /* Full width on mobile */
     padding: 0 15px; /* Add padding on the sides */
   }
 
@@ -464,13 +464,13 @@ hr {
   }
 
   .direct-contact-container {
-    margin-top: 60px;
+    margin-top: 10px;
     max-width: 260px;
   }
 
   .social-media-list {
     left: 0;
-    font-size: 4.5vw;
+    font-size: 2.5vw;
   }
 
   .social-media-list li {
@@ -491,7 +491,8 @@ hr {
 @media screen and (max-width: 768px) {
   .send-button,
   .alt-send-button {
-    width: calc(100% - 30px); /* Adjust for padding */
+    width: calc(100% - 0px); /* Adjust for padding */
+    height: 30px;
   }
   }
 }
