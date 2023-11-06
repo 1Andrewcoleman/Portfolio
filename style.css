@@ -474,6 +474,8 @@ hr {
   .social-media-list {
     left: 0;
     font-size: 2.5vw;
+    margin-top: -24px;
+    margin-bottom: -24px;
   }
 
   .social-media-list li {
@@ -1481,8 +1483,8 @@ button:hover {
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
     .box {
-        width: 60vw; /* Adjusted to viewport width */
-        height: 18vh; /* Adjusted to viewport height */
+        width: 56vw; /* Adjusted to viewport width */
+        height: 16vh; /* Adjusted to viewport height */
     }
     .gallery {
         gap: 1.5vh; /* Adjust the gap between boxes */
