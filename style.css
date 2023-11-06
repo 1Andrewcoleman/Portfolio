@@ -490,6 +490,9 @@ hr {
     height: 55px;
     line-height: 55px;
   }
+  .contact-list{
+    margin-bottom: -24px;
+  }
 
 }
 
