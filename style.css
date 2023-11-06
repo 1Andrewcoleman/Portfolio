@@ -696,8 +696,8 @@ hr {
     #about-me .container {
         flex-direction: column;
         align-items: center;
+        height: 71vh;
     }
-
     #about-me .about-me-image, #about-me .text-container {
         max-width: 100%;
         margin: 0;
@@ -706,6 +706,7 @@ hr {
     #about-me .about-me-image {
         order: -1; /* Make sure this comes first */
         width: 90%; /* Adjust width as needed, considering mobile viewport */
+        height: 18vh;
         margin-top: 5px; /* Remove top margin */
         margin-bottom: 5px; /* Add some space below the image */
     }
