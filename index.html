@@ -223,13 +223,6 @@
                  width: $(this).attr("data-width")
              }, 2000)
          });
-         
-         document.querySelector('#contact-form').addEventListener('submit', (e) => {
-             e.preventDefault();
-             e.target.elements.name.value = '';
-             e.target.elements.email.value = '';
-             e.target.elements.message.value = '';
-         });
       </script>
       <script>
           document.addEventListener("DOMContentLoaded", function() {
@@ -355,14 +348,14 @@
                 e.preventDefault();
 
                 // Get each form field by ID
-                var name = document.getElementById('name').value;
-                var email = document.getElementById('email').value;
-                var message = document.getElementById('message').value;
+                var name_1 = document.getElementById('name').value;
+                var email_1 = document.getElementById('email').value;
+                var message_1 = document.getElementById('message').value;
 
                 // Log the values for diagnostic purposes
-                console.log('Name:', name);
-                console.log('Email:', email);
-                console.log('Message:', message);
+                console.log('Name:', name_1);
+                console.log('Email:', email_1);
+                console.log('Message:', message_1);
 
                 // Construct the formData object
                 const formData = {
