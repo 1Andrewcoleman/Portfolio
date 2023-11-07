@@ -1524,6 +1524,7 @@ button:hover {
     }
 
     .description p {
+        margin-bottom: -16px;
         font-size: .7rem;
         max-width: 228px;    
       }
@@ -1532,6 +1533,8 @@ button:hover {
       font-size: 1rem;
       padding: 3px 8px;
       border-radius: 4px;
+      padding-top: 1px;
+      margin-left: 68px;
 
     }
 
