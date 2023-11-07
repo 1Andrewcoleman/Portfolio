@@ -1,7 +1,6 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 
 const app = express();
 
@@ -10,19 +9,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // POST endpoint to handle form submission
-app.post('/api/send-email', (req, res) => {
+app.post('/api/send-email.js', (req, res) => {
+  console.log('Received a request to /api/send-email');
+
   const { name, email, message } = req.body;
 
-// Nodemailer transporter
-let transporter = nodemailer.createTransport({
-  host: 'smtp.mail.me.com',
-  port: 587,
-  secure: false, // false for port 587, true for everything else
-  auth: {
-    user: process.env.ICLOUD_EMAIL, 
-    pass: process.env.ICLOUD_APP_SPECIFIC_PASSWORD
-  }
-});
+  console.log('Request Body:', req.body);
+
+  // Nodemailer transporter
+  let transporter = nodemailer.createTransport({
+    host: 'smtp.mail.me.com',
+    port: 587,
+    secure: false, // false for port 587, true for everything else
+    auth: {
+      user: process.env.ICLOUD_EMAIL, 
+      pass: process.env.ICLOUD_APP_SPECIFIC_PASSWORD
+    }
+  });
+
+  console.log('Transporter created');
 
   let mailOptions = {
     from: `"${name}" <${email}>`,
@@ -31,18 +36,28 @@ let transporter = nodemailer.createTransport({
     text: message
   };
 
+  console.log('Mail options set:', mailOptions);
+
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
-      console.log(error);
+      console.error('Error occurred while sending email:', error);
       res.status(500).send('Error sending email');
     } else {
-      console.log('Email sent: ' + info.response);
+      console.log('Email sent successfully:', info.response);
       res.status(200).send('Email sent successfully');
     }
   });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment Variables:`, {
+    PORT: process.env.PORT,
+    ICLOUD_EMAIL: process.env.ICLOUD_EMAIL,
+    ICLOUD_APP_SPECIFIC_PASSWORD: '***', // Masked for security
+  });
+});
+
 
 
