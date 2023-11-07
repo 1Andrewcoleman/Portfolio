@@ -1,3 +1,4 @@
+console.log('Hello world this does indeed work. kind of');
 const express = require('express');
 const nodemailer = require('nodemailer');
 
@@ -8,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // POST endpoint to handle form submission
-app.post('/api/send-email.js', (req, res) => {
+app.post('/api/send-email', (req, res) => {
   console.log(req.rawHeaders);
   console.log(req.body);
   console.log('Received a request to /api/send-email');
@@ -21,7 +22,7 @@ app.post('/api/send-email.js', (req, res) => {
   let transporter = nodemailer.createTransport({
     host: 'smtp.mail.me.com',
     port: 587,
-    secure: false, // false for port 587, true for everything else
+    secure: true, // false for port 587, true for everything else
     auth: {
       user: process.env.ICLOUD_EMAIL, 
       pass: process.env.ICLOUD_APP_SPECIFIC_PASSWORD
