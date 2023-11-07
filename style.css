@@ -152,7 +152,6 @@ canvas {
   }
 
   .landing-text {
-    top: 10px;
     left: -100%;
     opacity: 0;
     animation: slide-in 1s forwards;
