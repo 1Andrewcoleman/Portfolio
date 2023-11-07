@@ -360,6 +360,8 @@
                     message: e.target.elements.message.value
                 };
 
+                console.log('Form Data:', formData);
+
                 // Send the form data using fetch
                 fetch('/api/send-email', {
                     method: 'POST',
