@@ -1,12 +1,11 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
 
 const app = express();
 
-// Body parser middleware to parse form data
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // POST endpoint to handle form submission
 app.post('/api/send-email.js', (req, res) => {
