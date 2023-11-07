@@ -350,33 +350,40 @@
                      }, 500); // 0.5 seconds for fade out to complete
                  });
              });
-             // Now add the AJAX form submission code
-             var form = document.getElementById('contact-form'); // Ensure you have a form with this ID
-             form.addEventListener('submit', function(event) {
-                 event.preventDefault();
-         
-                 // Depending on your form structure, you might need to adapt the FormData creation
-                 var formData = new FormData(this);
-         
-                 fetch('api/send-email', {
-                         method: 'POST',
-                         body: formData
-                     })
-                     .then(response => {
-                         if (response.ok) {
-                             return response.text();
-                         }
-                         throw new Error('Network response was not ok.');
-                     })
-                     .then(data => {
-                         console.log('Success:', data);
-                         // Handle success (e.g., display a success message)
-                     })
-                     .catch((error) => {
-                         console.error('Error:', error);
-                         // Handle errors (e.g., display an error message)
-                     });
-             });
+            document.querySelector('#contact-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Get the form data
+                const formData = {
+                    name: e.target.elements.name.value,
+                    email: e.target.elements.email.value,
+                    message: e.target.elements.message.value
+                };
+
+                // Send the form data using fetch
+                fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok ' + response.statusText);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    // Here you can clear the form or display a success message
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Here you can handle the error, show an error message, etc.
+                });
+            });
+
          
          
          });
