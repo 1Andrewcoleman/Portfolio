@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // POST endpoint to handle form submission
-app.post('api/send-email', (req, res) => {
+app.post('/api/send-email.js', (req, res) => {
   console.log('Received a request to /api/send-email');
 
   const { name, email, message } = req.body;
