@@ -1584,14 +1584,16 @@ button:hover {
 /* Modal Content */
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 55% auto; /* 55% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
   color: black;
   z-index: 9999999999999999999;
-}
+  text-align: center;
+  line-height: 2;
 
+}
 /* The Close Button */
 .close {
   color: #aaa;
