@@ -67,7 +67,7 @@ canvas {
 
 .landing-text {
   position: absolute;
-  top: 20px;  /* Adjusted for mobile view */
+  top: -43px;  /* Adjusted for mobile view */
   left: 20px;  /* Adjusted for mobile view */
   text-align: left;
   z-index: 3;
@@ -91,6 +91,7 @@ canvas {
   color: #000000;
   margin-bottom: 30px;
   max-width: 600px;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.7);
 }
 
 .landing-text button {
