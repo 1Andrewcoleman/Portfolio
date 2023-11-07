@@ -714,7 +714,6 @@ hr {
     #about-me .text-container p {
         font-size: 1.2rem;
         text-align: left;
-        padding: 0 20px; /* Add padding for paragraph text */
         margin-bottom: 20px; /* Adjusted for spacing below the paragraph */
         margin-top: 20px; /* Adjusted for spacing below the paragraph */
         max-width: 250px;
@@ -854,7 +853,7 @@ hr {
 /* Media Query for Smaller Screens */
 @media (max-width: 600px) {
   .vertical-navbar {
-    padding: 15px;  /* Reduced padding */
+    padding: 7px;  /* Reduced padding */
     border-radius: 10px;  /* Smaller border radius */
   }
 
