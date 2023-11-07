@@ -98,7 +98,6 @@ canvas {
 }
 
 .landing-text button {
-  font-family: "Consolas", "monaco", "monospace", sans-serif;
   display: inline-flex;
   align-items: center;
   justify-content: center;
