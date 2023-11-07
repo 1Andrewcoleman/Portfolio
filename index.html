@@ -359,10 +359,12 @@
 
                 // Construct the formData object
                 const formData = {
-                    name,
-                    email,
-                    message
+                    name_1,
+                    email_1,
+                    message_1
                 };
+                console.log('Form Data Before Sending:', formData);
+
 
                 // Send the form data using fetch
                 fetch('/api/send-email', {
