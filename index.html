@@ -350,17 +350,23 @@
                      }, 500); // 0.5 seconds for fade out to complete
                  });
              });
-            document.querySelector('#contact-form').addEventListener('submit', function(e) {
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('contact-form');
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
 
-                // Get the form data
-                const formData = {
-                    name: e.target.elements.name.value,
-                    email: e.target.elements.email.value,
-                    message: e.target.elements.message.value
-                };
+                // Get each form field by ID
+                var name = document.getElementById('name').value;
+                var email = document.getElementById('email').value;
+                var message = document.getElementById('message').value;
 
-                console.log('Form Data:', formData);
+                // Log the values for diagnostic purposes
+                console.log('Name:', name);
+                console.log('Email:', email);
+                console.log('Message:', message);
+
+                // Construct the formData object
+                const formData = { name, email, message };
 
                 // Send the form data using fetch
                 fetch('/api/send-email', {
