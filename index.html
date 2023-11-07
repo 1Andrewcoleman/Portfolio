@@ -150,7 +150,7 @@
       <section id="contact">
          <h1>Lets Get In Touch</h1>
          <div class="contact-wrapper">
-            <form id="contact-form" class="form-horizontal" role="form" action="api/send-email" method="post">
+            <form id="contact-form" class="form-horizontal" role="form" method="post">
                <div class="form-group">
                   <div class="col-sm-12">
                      <input type="text" class="form-control" id="name" placeholder="NAME" name="name" value="" required>
@@ -233,38 +233,38 @@
       </script>
       <script>
          document.addEventListener("DOMContentLoaded", function() {
-           // Mobile Warning Modal Code
-           // Function to detect mobile device
-           function detectMobileDevice() {
-               const userAgent = navigator.userAgent.toLowerCase();
-               return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(userAgent);
-           }
+             // Mobile Warning Modal Code
+             // Function to detect mobile device
+             function detectMobileDevice() {
+                 const userAgent = navigator.userAgent.toLowerCase();
+                 return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(userAgent);
+             }
          
-           // Get the modal
-           var modal = document.getElementById('mobileWarningModal');
+             // Get the modal
+             var modal = document.getElementById('mobileWarningModal');
          
-           // Get the <span> element that closes the modal
-           var span = document.getElementsByClassName('close')[0];
+             // Get the <span> element that closes the modal
+             var span = document.getElementsByClassName('close')[0];
          
-           // Get the button element that dismisses the modal
-           var dismissBtn = document.getElementById('dismissBtn');
+             // Get the button element that dismisses the modal
+             var dismissBtn = document.getElementById('dismissBtn');
          
-           // Function to close the modal
-           function closeModal() {
-               modal.style.display = 'none';
-           }
+             // Function to close the modal
+             function closeModal() {
+                 modal.style.display = 'none';
+             }
          
-           // When the user clicks on <span> (x), close the modal
-           span.onclick = closeModal;
+             // When the user clicks on <span> (x), close the modal
+             span.onclick = closeModal;
          
-           // When the user clicks on "Dismiss" button, close the modal
-           dismissBtn.onclick = closeModal;
+             // When the user clicks on "Dismiss" button, close the modal
+             dismissBtn.onclick = closeModal;
          
-           // If a mobile device is detected, display the modal
-           if (detectMobileDevice()) {
-               modal.style.display = 'block';
-           }
-                 
+             // If a mobile device is detected, display the modal
+             if (detectMobileDevice()) {
+                 modal.style.display = 'block';
+             }
+         
              // Initialize sections to be hidden
              const sections = document.querySelectorAll("section, .landing-page");
              sections.forEach(section => {
@@ -301,7 +301,7 @@
              // Handle button clicks
              const infoButtons = document.querySelectorAll('.info-button');
              const contentDisplay = document.querySelector('#about-me .content-display');
-             
+         
              infoButtons.forEach(button => {
                  button.addEventListener('click', function() {
                      const target = this.getAttribute('data-target');
@@ -315,50 +315,70 @@
                          switch (target) {
                              case 'skills':
                                  contentDisplay.innerHTML = `
-                                     <h1>Some Key Skills</h1>
-                                     <p>My professional skill set is diverse and robust, encompassing expertise in weather forecasting, mesoscale meteorology, and the precision of technical writing. I'm equally dedicated to research, data science, and the application of AI/ML methods to Earth system sciences, with a solid foundation in Python (amogst other languages) to bring it all together. These key skills enable me to tackle complex challenges in meteorology with a multi-faceted approach.`;
+                          <h1>Some Key Skills</h1>
+                          <p>My professional skill set is diverse and robust, encompassing expertise in weather forecasting, mesoscale meteorology, and the precision of technical writing. I'm equally dedicated to research, data science, and the application of AI/ML methods to Earth system sciences, with a solid foundation in Python (amogst other languages) to bring it all together. These key skills enable me to tackle complex challenges in meteorology with a multi-faceted approach.`;
                                  break;
                              case 'education':
                                  contentDisplay.innerHTML = `
-                                     <h1>Educational Pursuits</h1>
-                                     <ul>
-                                         <li>A.S. in Geography, University of North Georgia, 2016-2018</li>
-                                         <li>B.S. in Atmospheric Science, University of North Carolina Asheville, 2018-2021</li>
-                                         <li>M.S. in Applied Meteorology, Mississippi State University, 2022-Present</li>
-                                     </ul>`;
+                          <h1>Educational Pursuits</h1>
+                          <ul>
+                              <li>A.S. in Geography, University of North Georgia, 2016-2018</li>
+                              <li>B.S. in Atmospheric Science, University of North Carolina Asheville, 2018-2021</li>
+                              <li>M.S. in Applied Meteorology, Mississippi State University, 2022-Present</li>
+                          </ul>`;
                                  break;
                              case 'research':
                                  contentDisplay.innerHTML = `
-                                     <h1>Research Interests</h1>
-                                     <ul>
-                                         <li>Boundary Layer Cold Season Dynamics</li>
-                                         <li>Mesoscale Processes and Severe Convective Weather</li>
-                                         <li>Artificial Intelligence in the Earth/Atmospheric Sciences</li>
-                                         <li>Short-Medium Range Atmospheric Predictability</li>
-                                         <li>Numerical Ensemble Techniques</li>
-                                     </ul>`;
+                          <h1>Research Interests</h1>
+                          <ul>
+                              <li>Boundary Layer Cold Season Dynamics</li>
+                              <li>Mesoscale Processes and Severe Convective Weather</li>
+                              <li>Artificial Intelligence in the Earth/Atmospheric Sciences</li>
+                              <li>Short-Medium Range Atmospheric Predictability</li>
+                              <li>Numerical Ensemble Techniques</li>
+                          </ul>`;
                                  break;
                              case 'hobbies':
                                  contentDisplay.innerHTML = `
-                                     <h1>How I Pass the Time</h1>
-                                     <p>When I'm not refining my programmatic or meteorological skills, you can find me engaged in a game of chess or savoring a good cup of coffee. Travel and fitness are also parts of my routine, offering a refreshing counterbalance to my professional pursuits. But it's the moments shared with my fiancé and our adorable puppy Teddy as well as time with my family, that I cherish the most. These simple joys add a meaningful depth to my life beyond the screen.`;
+                          <h1>How I Pass the Time</h1>
+                          <p>When I'm not refining my programmatic or meteorological skills, you can find me engaged in a game of chess or savoring a good cup of coffee. Travel and fitness are also parts of my routine, offering a refreshing counterbalance to my professional pursuits. But it's the moments shared with my fiancé and our adorable puppy Teddy as well as time with my family, that I cherish the most. These simple joys add a meaningful depth to my life beyond the screen.`;
                                  break;
                          }
-                         
+         
                          // Fade in new content
                          contentDisplay.style.opacity = 1;
-                     }, 500);  // 0.5 seconds for fade out to complete
+                     }, 500); // 0.5 seconds for fade out to complete
                  });
              });
-                 // Handle the hamburger menu toggle
-             const hamburgerMenu = document.querySelector('.hamburger-menu');
-             const navList = document.querySelector('.vertical-navbar');
+             // Now add the AJAX form submission code
+             var form = document.getElementById('contact-form'); // Ensure you have a form with this ID
+             form.addEventListener('submit', function(event) {
+                 event.preventDefault();
          
-             if (hamburgerMenu) {
-                 hamburgerMenu.addEventListener('click', function() {
-                     navList.classList.toggle('active'); // Toggle the visibility of the navbar items
-                 });
-             }
+                 // Depending on your form structure, you might need to adapt the FormData creation
+                 var formData = new FormData(this);
+         
+                 fetch('/api/send-email', {
+                         method: 'POST',
+                         body: formData
+                     })
+                     .then(response => {
+                         if (response.ok) {
+                             return response.text();
+                         }
+                         throw new Error('Network response was not ok.');
+                     })
+                     .then(data => {
+                         console.log('Success:', data);
+                         // Handle success (e.g., display a success message)
+                     })
+                     .catch((error) => {
+                         console.error('Error:', error);
+                         // Handle errors (e.g., display an error message)
+                     });
+             });
+         
+         
          });
       </script>
       <script>
