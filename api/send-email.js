@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 
 // POST endpoint to handle form submission
 app.post('/api/send-email.js', (req, res) => {
+  console.log(req.rawHeaders);
+  console.log(req.body);
   console.log('Received a request to /api/send-email');
 
   const { name, email, message } = req.body;
@@ -46,16 +48,6 @@ app.post('/api/send-email.js', (req, res) => {
       console.log('Email sent successfully:', info.response);
       res.status(200).send('Email sent successfully');
     }
-  });
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment Variables:`, {
-    PORT: process.env.PORT,
-    ICLOUD_EMAIL: process.env.ICLOUD_EMAIL,
-    ICLOUD_APP_SPECIFIC_PASSWORD: '***', // Masked for security
   });
 });
 
