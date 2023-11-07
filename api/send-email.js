@@ -8,7 +8,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // POST endpoint to handle form submission
-app.post('/api/send-email.js', (req, res) => {
+app.post('/api/send-email', (req, res) => {
   console.log(req.rawHeaders);
   console.log(req.body);
   console.log('Received a request to /api/send-email');
