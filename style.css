@@ -1514,7 +1514,7 @@ button:hover {
 
   .description p {
     margin-bottom: -16px;
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     max-width: 228px;
   }
 
@@ -1544,7 +1544,7 @@ button:hover {
   .card-content p {
     font-size: 0.8rem;
   }
-  
+
   .card-content {
     display: flex;
     flex-direction: column;
