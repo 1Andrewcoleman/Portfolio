@@ -348,20 +348,20 @@
                 e.preventDefault();
 
                 // Get each form field by ID
-                var name_1 = document.getElementById('name').value;
-                var email_1 = document.getElementById('email').value;
-                var message_1 = document.getElementById('message').value;
+                var name = document.getElementById('name').value;
+                var email = document.getElementById('email').value;
+                var message = document.getElementById('message').value;
 
                 // Log the values for diagnostic purposes
-                console.log('Name:', name_1);
-                console.log('Email:', email_1);
-                console.log('Message:', message_1);
+                console.log('Name:', name);
+                console.log('Email:', email);
+                console.log('Message:', message);
 
                 // Construct the formData object
                 const formData = {
-                    name_1,
-                    email_1,
-                    message_1
+                    name,
+                    email,
+                    message
                 };
                 console.log('Form Data Before Sending:', formData);
 
