@@ -1630,6 +1630,8 @@ button:hover {
   border: 1px solid #888;
   z-index: 99999999999999999999999999999999999999999999999999999999999999;
   transition: top 0.5s ease;
+  border: 1px solid #888;
+  border-radius: 10px;
 }
 
 /* Success message styling */
