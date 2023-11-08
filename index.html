@@ -189,6 +189,9 @@
                <hr>
             </div>
          </div>
+         <div id="success-message" style="color: green;"></div>
+         <div id="error-message" style="color: red;"></div>
+
       </section>
       <!-- Mobile Device Warning Modal -->
       <div id="mobileWarningModal" class="modal">
@@ -352,11 +355,6 @@
                 var email = document.getElementById('email').value;
                 var message = document.getElementById('message').value;
 
-                // Log the values for diagnostic purposes
-                console.log('Name:', name);
-                console.log('Email:', email);
-                console.log('Message:', message);
-
                 // Construct the formData object
                 const formData = {
                     name,
@@ -382,11 +380,19 @@
                     })
                     .then(data => {
                         console.log('Success:', data);
-                        // Here you can clear the form or display a success message
+                        // Clear the form fields
+                        document.getElementById('name').value = '';
+                        document.getElementById('email').value = '';
+                        document.getElementById('message').value = '';
+                        // Display a success message
+                        document.getElementById('success-message').textContent = 'Email sent successfully!';
+                        document.getElementById('error-message').textContent = '';
                     })
                     .catch((error) => {
                         console.error('Error:', error);
-                        // Here you can handle the error, show an error message, etc.
+                        // Display an error message
+                        document.getElementById('error-message').textContent = 'Failed to send email. Please try again later.';
+                        document.getElementById('success-message').textContent = '';
                     });
             });
         });

@@ -1,5 +1,3 @@
-console.log('Hello world this does indeed work. kind of');
-
 const express = require('express');
 const nodemailer = require('nodemailer');
 
