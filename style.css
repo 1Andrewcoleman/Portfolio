@@ -138,6 +138,24 @@ canvas {
   transition: all 550ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
+strong {
+  position: relative;
+}
+
+strong::before {
+  /* Highlight color */
+  background-color: #46b96c;
+
+  content: "";
+  position: absolute;
+  width: calc(100% + 4px);
+  height: 60%;
+  left: -2px;
+  bottom: 0;
+  z-index: -1;
+  transform: rotate(-2deg);
+}
+
 /* Media Queries for Smaller Screens */
 @media (max-width: 768px) {
   .social-media-icons {
@@ -180,23 +198,6 @@ canvas {
   }
 }
 
-strong {
-  position: relative;
-}
-
-strong::before {
-  /* Highlight color */
-  background-color: #46b96c;
-
-  content: "";
-  position: absolute;
-  width: calc(100% + 4px);
-  height: 60%;
-  left: -2px;
-  bottom: 0;
-  z-index: -1;
-  transform: rotate(-2deg);
-}
 
 /* width */
 ::-webkit-scrollbar {
