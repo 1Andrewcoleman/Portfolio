@@ -1619,10 +1619,10 @@ button:hover {
 .notification-window {
   display: none; /* Hidden by default */
   position: fixed;
-  left: 0;
+  left: 50%; /* Center horizontally */
   top: -100px; /* Start off-screen */
-  width: 50%;
-  background-color: #fefefe;
+  transform: translateX(-50%); /* Adjust for center alignment */
+  max-width: 50%; /* Maximum width of the notification */  background-color: #fefefe;
   text-align: center;
   line-height: 2;
   padding: 20px;
