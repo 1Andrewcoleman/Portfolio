@@ -32,11 +32,13 @@ app.post('/api/send-email', async (req, res) => {
     console.log('Transporter created');
 
     let mailOptions = {
-        from: `"${name}" <${email}>`,
-        to: process.env.ICLOUD_EMAIL, // Your iCloud email
-        subject: `New Contact from ${name}`,
-        text: message
+        from: process.env.ICLOUD_EMAIL,
+        replyTo: req.body.email, // The submitter's email address
+        to: process.env.ICLOUD_EMAIL, // Your personal email where you want to receive the contact form info
+        subject: `New Contact from ${req.body.name}`, // Subject line including the submitter's name
+        text: `Message from: ${req.body.name} <${req.body.email}>\n\n${req.body.message}` // The actual message from the submitter
     };
+
 
     console.log('Mail options set:', mailOptions);
 
