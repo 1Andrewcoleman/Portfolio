@@ -346,10 +346,12 @@
                     }, 500); // 0.5 seconds for fade out to complete
                 });
             });
-            // Function to show notification window
             function showNotification(message, isSuccess) {
                 var notificationWindow = document.getElementById('notification-window');
                 var notificationMessage = document.getElementById('notification-message');
+
+                // Debugging: Log the current notification state
+                console.log('Showing notification:', message, isSuccess);
 
                 // Set the message and styles based on success or error
                 notificationMessage.textContent = message;
@@ -358,12 +360,14 @@
                 // Move the notification window into view
                 notificationWindow.style.top = '60px';
 
+                // Debugging: Log the style being applied
+                console.log('Notification style applied:', notificationWindow.style.top);
+
                 // Automatically hide the notification window after 5 seconds
                 setTimeout(() => {
                     notificationWindow.style.top = '-100px';
                 }, 5000);
             }
-
             var form = document.getElementById('contact-form');
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
