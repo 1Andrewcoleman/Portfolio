@@ -1615,3 +1615,29 @@ button:hover {
   border-radius: 5px;
 }
 
+/* Styles for the notification window */
+.notification-window {
+  display: none; /* Hidden by default */
+  position: fixed;
+  left: 0;
+  top: -100px; /* Start off-screen */
+  width: 100%;
+  background-color: #f8f8f8;
+  text-align: center;
+  padding: 20px;
+  box-shadow: 0px 2px 10px rgba(0,0,0,0.5);
+  z-index: 1000;
+  transition: top 0.5s ease;
+}
+
+/* Success message styling */
+.notification-success {
+  color: green;
+}
+
+/* Error message styling */
+.notification-error {
+  color: red;
+}
+
+

@@ -189,8 +189,10 @@
                <hr>
             </div>
          </div>
-         <div id="success-message" style="color: green;"></div>
-         <div id="error-message" style="color: red;"></div>
+         <div id="notification-window" class="notification-window">
+            <p id="notification-message"></p>
+         </div>
+
 
       </section>
       <!-- Mobile Device Warning Modal -->
@@ -346,6 +348,24 @@
                     }, 500); // 0.5 seconds for fade out to complete
                 });
             });
+            // Function to show notification window
+            function showNotification(message, isSuccess) {
+                var notificationWindow = document.getElementById('notification-window');
+                var notificationMessage = document.getElementById('notification-message');
+
+                // Set the message and styles based on success or error
+                notificationMessage.textContent = message;
+                notificationWindow.className = `notification-window ${isSuccess ? 'notification-success' : 'notification-error'}`;
+
+                // Move the notification window into view
+                notificationWindow.style.top = '0px';
+
+                // Automatically hide the notification window after 5 seconds
+                setTimeout(() => {
+                    notificationWindow.style.top = '-100px';
+                }, 5000);
+            }
+
             var form = document.getElementById('contact-form');
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -363,38 +383,36 @@
                 };
                 console.log('Form Data Before Sending:', formData);
 
-
                 // Send the form data using fetch
                 fetch('/api/send-email', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok ' + response.statusText);
-                        }
-                        return response.text();
-                    })
-                    .then(data => {
-                        console.log('Success:', data);
-                        // Clear the form fields
-                        document.getElementById('name').value = '';
-                        document.getElementById('email').value = '';
-                        document.getElementById('message').value = '';
-                        // Display a success message
-                        document.getElementById('success-message').textContent = 'Email sent successfully!';
-                        document.getElementById('error-message').textContent = '';
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                        // Display an error message
-                        document.getElementById('error-message').textContent = 'Failed to send email. Please try again later.';
-                        document.getElementById('success-message').textContent = '';
-                    });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    // Clear the form fields
+                    document.getElementById('name').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('message').value = '';
+                    // Display a success message using the notification function
+                    showNotification('Email sent successfully!', true);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    // Display an error message using the notification function
+                    showNotification('Failed to send email. Please try again later.', false);
+                });
             });
+
         });
       </script>
       <script>
