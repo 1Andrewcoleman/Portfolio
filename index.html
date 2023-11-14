@@ -277,7 +277,7 @@
 
             navLinks.forEach(link => {
                 link.addEventListener("click", function(e) {
-                    //e.preventDefault();
+                    e.preventDefault();
                     e.stopPropagation();
 
                     // Hide all sections including the landing page
@@ -379,7 +379,7 @@
 
             var form = document.getElementById('contact-form');
             form.addEventListener('submit', function(e) {
-                //e.preventDefault();
+                e.preventDefault();
 
                 // Get each form field by ID
                 var name = document.getElementById('name').value;
@@ -564,10 +564,6 @@
              } else {
                  document.addEventListener("mousemove", (e) => {
                      stars.parallax(e);
-                 });
-                 let content = document.getElementById("content");
-                 content.addEventListener("scroll", (e) => {
-                     stars.scroll(content.scrollLeft);
                  });
              }
          }
