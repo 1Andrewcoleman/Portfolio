@@ -277,7 +277,7 @@
 
             navLinks.forEach(link => {
                 link.addEventListener("click", function(e) {
-                    e.preventDefault();
+                    //e.preventDefault();
                     e.stopPropagation();
 
                     // Hide all sections including the landing page
@@ -379,7 +379,7 @@
 
             var form = document.getElementById('contact-form');
             form.addEventListener('submit', function(e) {
-                e.preventDefault();
+                //e.preventDefault();
 
                 // Get each form field by ID
                 var name = document.getElementById('name').value;
