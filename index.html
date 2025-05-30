@@ -30,7 +30,7 @@
             <h1>Hi, <br>I'm Andrew Coleman</h1>
             <h2>ATMOSPHERIC SCIENTIST</h2>
             <p>Detail-oriented. Innovative. Analytical. Curious.</p>
-            <button onclick="window.open('Updated_resume.pdf', '_blank')">View Resume</button>
+            <button onclick="window.open('resume.pdf', '_blank')">View Resume</button>
          </div>
          <div id="foglayer_01" class="fog">
             <div class="image01"></div>
@@ -307,7 +307,7 @@
                             case 'skills':
                                 contentDisplay.innerHTML = `
                                   <h1>Some Key Skills</h1>
-                                  <p>My professional skill set is diverse and robust, encompassing expertise in weather forecasting, mesoscale meteorology, and the precision of technical writing. I'm equally dedicated to research, data science, and the application of AI/ML methods to Earth system sciences, with a solid foundation in Python (amogst other languages) to bring it all together. These key skills enable me to tackle complex challenges in meteorology with a multi-faceted approach.`;
+                                  <p>My professional skill set is diverse and robust, encompassing expertise in weather forecasting, mesoscale meteorology, and the precision of technical writing. I'm equally dedicated to research, data science, and the application of AI/ML methods to Earth system sciences, with a solid foundation in Python (amongst other languages) to bring it all together. These key skills enable me to tackle complex challenges in meteorology with a multi-faceted approach.`;
                                 break;
                             case 'education':
                                 contentDisplay.innerHTML = `
@@ -315,7 +315,7 @@
                                   <ul>
                                       <li>A.S. in Geography, University of North Georgia, 2016-2018</li>
                                       <li>B.S. in Atmospheric Science, University of North Carolina Asheville, 2018-2021</li>
-                                      <li>M.S. in Applied Meteorology, Mississippi State University, 2022-Present</li>
+                                      <li>M.S. in Applied Meteorology, Mississippi State University, 2022-2025</li>
                                   </ul>`;
                                 break;
                             case 'research':
@@ -332,7 +332,7 @@
                             case 'hobbies':
                                 contentDisplay.innerHTML = `
                                   <h1>How I Pass the Time</h1>
-                                  <p>When I'm not refining my programmatic or meteorological skills, you can find me engaged in a game of chess or savoring a good cup of coffee. Travel and fitness are also parts of my routine, offering a refreshing counterbalance to my professional pursuits. But it's the moments shared with my fiancé and our adorable puppy Teddy as well as time with my family, that I cherish the most. These simple joys add a meaningful depth to my life beyond the screen.`;
+                                  <p>When I'm not refining my programmatic or meteorological skills, you can find me engaged in a game of chess or savoring a good cup of coffee. Travel and fitness are also parts of my routine, offering a refreshing counterbalance to my professional pursuits. But it's the moments shared with my wife and our golden retriever, Teddy, as well as time with my family, that I cherish the most. These simple joys add a meaningful depth to my life beyond the screen.`;
                                 break;
                         }
 
@@ -359,9 +359,6 @@
                 // Move the notification window into view
                 notificationWindow.style.top = '-5px';
 
-                // Debugging: Log the style being applied
-                console.log('Notification style applied:', notificationWindow.style.top);
-
                 // Automatically hide the notification window after 5 seconds
                 setTimeout(() => {
                     notificationWindow.style.top = '-100px';
@@ -387,7 +384,6 @@
                     email,
                     message
                 };
-                console.log('Form Data Before Sending:', formData);
 
                 // Send the form data using fetch
                 fetch('/api/send-email', {
@@ -413,7 +409,6 @@
                     showNotification('Email sent successfully!', true);
                 })
                 .catch((error) => {
-                    console.error('Error:', error);
                     // Display an error message using the notification function
                     showNotification('Failed to send email. Please try again later.', false);
                 });
