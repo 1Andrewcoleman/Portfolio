@@ -8,13 +8,8 @@ app.use(express.json());
 
 // POST endpoint to handle form submission
 app.post('/api/send-email', async (req, res) => {
-    console.log(req.rawHeaders);
-    console.log(req.body);
-    console.log('Received a request to /api/send-email');
 
     const { name, email, message } = req.body;
-
-    console.log('Request Body:', req.body);
 
     // Nodemailer transporter
     let transporter = nodemailer.createTransport({
@@ -33,12 +28,9 @@ app.post('/api/send-email', async (req, res) => {
         from: process.env.ICLOUD_EMAIL,
         replyTo: req.body.email, // The submitter's email address
         to: process.env.ICLOUD_EMAIL, // Your personal email where you want to receive the contact form info
-        subject: `New Contact from ${req.body.name}`, // Subject line including the submitter's name
+        subject: `Website Email from: ${req.body.name}`, // Subject line including the submitter's name
         text: `Message from: ${req.body.name} <${req.body.email}>\n\n${req.body.message}` // The actual message from the submitter
     };
-
-
-    console.log('Mail options set:', mailOptions);
 
     // Try to send the email and await its completion
     try {
