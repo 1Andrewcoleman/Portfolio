@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
   </head>
   <body>
     <canvas id="starfield"></canvas>
@@ -25,7 +26,7 @@
         <h1>Hi, <br>I'm Andrew Coleman</h1>
         <h2>ATMOSPHERIC SCIENTIST</h2>
         <p>Detail-oriented. Innovative. Analytical. Curious.</p>
-        <button onclick="window.open('resume.pdf', '_blank')">View Resume</button>
+        <a href="resume.pdf" target="_blank" rel="noopener noreferrer" class="resume-button">View Resume</a>
       </div>
       <div id="foglayer_01" class="fog">
         <div class="image01"></div>
@@ -83,7 +84,7 @@
           <div class="description">
             <h3>AI Undergrad Research</h3>
             <p>At the University of North Carolina Asheville, I spearheaded a research project, utilizing advanced ANNs for superior weather forecasting in the WxChallenge, outperforming more than 80% of competitors, which culminated in a collaborative publication in the Journal of Weather and Forecasting.</p>
-            <button onclick="openInfoCard('infoCard1')">Learn More</button>
+            <button data-open-card="infoCard1">Learn More</button>
           </div>
         </div>
         <div class="box">
@@ -91,7 +92,7 @@
           <div class="description">
             <h3>Data Visualization</h3>
             <p>Meteorology is multi-faceted and one of those facets is data visualization. When I have the time, I'm taking my time to learn and understand the best practices and continuing to rethink the way we, as meteorologists, use data.</p>
-            <button onclick="openInfoCard('infoCard2')">Learn More</button>
+            <button data-open-card="infoCard2">Learn More</button>
           </div>
         </div>
         <div class="box">
@@ -99,7 +100,7 @@
           <div class="description">
             <h3>Storm Chasing/Photography</h3>
             <p>My opportunities to storm chase are few and far between, but deeply cherished. Immersing myself in what has been my life's passion since childhood, I find calmness in the eye of the storm.</p>
-            <button onclick="openInfoCard('infoCard3')">Learn More</button>
+            <button data-open-card="infoCard3">Learn More</button>
           </div>
         </div>
         <div class="box">
@@ -107,41 +108,43 @@
           <div class="description">
             <h3>Forecast Analysis</h3>
             <p>Ever since my initial fascination with meteorology, I've been deeply committed to expanding my knowledge of the atmosphere and the intricacies of forecasting. Whenever possible, I dedicate time to hone my forecasting abilities, explore emerging predictive techniques, and continuously refine my skills.</p>
-            <button onclick="openInfoCard('infoCard4')">Learn More</button>
+            <button data-open-card="infoCard4">Learn More</button>
           </div>
         </div>
       </div>
 
-      <div id="infoCard1" class="info-card">
+      <div id="modal-backdrop" class="modal-backdrop"></div>
+
+      <div id="infoCard1" class="info-card" role="dialog" aria-modal="true" aria-labelledby="infoCard1Title" aria-hidden="true">
         <div class="card-image" style="background-image: url('IMG_3721.JPG');"></div>
         <div class="card-content">
-          <h3>AI Undergrad Research</h3>
+          <h3 id="infoCard1Title">AI Undergrad Research</h3>
           <p>During my time at the University of North Carolina Asheville, I had the pleasure of leading a successful research project that deployed multiple individual Artificial Neural Networks (ANNs) in the collegiate weather forecasting challenge known as "The WxChallenge." Remarkably, these ANNs significantly outperformed conventional operational guidance, surpassing more than 80% of the active WxChallenge competitors. Following the competition and graduating, my research advisor, colleague, and I shifted our focus towards publishing our findings, which were recently featured in the Journal of Weather and Forecasting.</p>
-          <button onclick="closeInfoCard('infoCard1')">Close</button>
+          <button data-close-card="infoCard1">Close</button>
         </div>
       </div>
-      <div id="infoCard2" class="info-card">
+      <div id="infoCard2" class="info-card" role="dialog" aria-modal="true" aria-labelledby="infoCard2Title" aria-hidden="true">
         <div class="card-image" style="background-image: url('500mb_Geopotential Height_verification.png');"></div>
         <div class="card-content">
-          <h3>Data Visualization</h3>
+          <h3 id="infoCard2Title">Data Visualization</h3>
           <p>In the moments away from work, my master's studies, and time with my fiancé, I diligently refine my skills in atmospheric and earth data visualization. Meteorology, with its multifaceted nature, particularly highlights the critical role of effective data visualization. As I navigate through available times, I engage in a continuous learning process, exploring and understanding best practices, and re-evaluating how we, as meteorologists, utilize data in our varied applications. My passion for data visualization stems from a genuine desire to equip meteorologists with essential tools to excel in their forecasting roles. It's my firm belief that meteorologists, especially those making critical, potentially life-saving decisions, should be provided with top-tier meteorological data to support their decisions. If this is not the case, we, as data curators, have inherently failed them, underscoring a pivotal area demanding our attention and improvement in the field.</p>
-          <button onclick="closeInfoCard('infoCard2')">Close</button>
+          <button data-close-card="infoCard2">Close</button>
         </div>
       </div>
-      <div id="infoCard3" class="info-card">
+      <div id="infoCard3" class="info-card" role="dialog" aria-modal="true" aria-labelledby="infoCard3Title" aria-hidden="true">
         <div class="card-image" style="background-image: url('IMG_3909.jpg');"></div>
         <div class="card-content">
-          <h3>Storm Chasing/Photography</h3>
+          <h3 id="infoCard3Title">Storm Chasing/Photography</h3>
           <p>As I've noted, opportunities for storm chasing are infrequent for me, yet they provide rich experiences worth reflecting upon, such as the event depicted in the image above from an encounter in northwestern Georgia. On that particular day in July of 2018, while at my grandparents' house and anticipating storms later in the evening, KHTX (Huntsville, Alabama's WSR-88D) was unfortunately down. Utilizing KFFC's radar that evening, I identified a developing cell just a few miles NW of our location. After stepping outside to capture footage of the approaching shelf cloud, I unexpectedly began filming just moments before an EF-0 tornado developed. The screenshot above was captured shortly after I recognized the magnitude of what I was documenting, punctuated by the tornado blowing a transformer in the Lafayette, GA area. This narrative is poignant for me for two reasons: it marks the first time I witnessed a tornado in person, and despite being a mere 1.5 miles from it, I experienced an unparalleled sense of calm amidst the storm's chaos.</p>
-          <button onclick="closeInfoCard('infoCard3')">Close</button>
+          <button data-close-card="infoCard3">Close</button>
         </div>
       </div>
-      <div id="infoCard4" class="info-card">
+      <div id="infoCard4" class="info-card" role="dialog" aria-modal="true" aria-labelledby="infoCard4Title" aria-hidden="true">
         <div class="card-image" style="background-image: url('forecast.gif');"></div>
         <div class="card-content">
-          <h3>Forecast Analysis</h3>
+          <h3 id="infoCard4Title">Forecast Analysis</h3>
           <p>From the moment I became captivated by meteorology at the young age of 11, my fascination with the art and science of forecasting became the driving force behind my decision to pursue a Master of Science in Applied Meteorology. I harbor a profound passion for atmospheric predictability, and I'm perpetually driven by a desire to explore the farthest extents of what's achievable within it. When constructing my forecasts, my meticulous nature comes to the forefront. I offer unparalleled attention to detail, ensuring that no nuance or subtlety is overlooked.</p>
-          <button onclick="closeInfoCard('infoCard4')">Close</button>
+          <button data-close-card="infoCard4">Close</button>
         </div>
       </div>
     </section>
@@ -150,6 +153,10 @@
       <h1>Lets Get In Touch</h1>
       <div class="contact-wrapper">
         <form id="contact-form" class="form-horizontal" role="form" method="post">
+          <div class="honeypot" aria-hidden="true">
+            <label>Leave this empty</label>
+            <input type="text" name="_honeypot" tabindex="-1" autocomplete="off">
+          </div>
           <div class="form-group">
             <input type="text" class="form-control" id="name" placeholder="NAME" name="name" required>
           </div>
@@ -206,238 +213,5 @@
         <button id="dismissBtn">Dismiss</button>
       </div>
     </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // ── Mobile Warning Modal ──
-        const modal = document.getElementById("mobileWarningModal");
-        const closeBtn = modal.querySelector(".close");
-        const dismissBtn = document.getElementById("dismissBtn");
-
-        function closeModal() {
-          modal.style.display = "none";
-        }
-
-        closeBtn.addEventListener("click", closeModal);
-        dismissBtn.addEventListener("click", closeModal);
-
-        const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
-          navigator.userAgent
-        );
-        if (isMobile) {
-          modal.style.display = "block";
-        }
-
-        // ── Section navigation (show/hide) ──
-        const allSections = document.querySelectorAll("section, .landing-page");
-
-        allSections.forEach((section) => {
-          section.classList.add("hidden");
-        });
-
-        const landingPage = document.getElementById("landing-page");
-        landingPage.classList.remove("hidden");
-        landingPage.classList.add("visible");
-
-        document.querySelectorAll(".vertical-navbar a").forEach((link) => {
-          link.addEventListener("click", function (e) {
-            e.preventDefault();
-
-            allSections.forEach((section) => {
-              section.classList.remove("visible");
-              section.classList.add("hidden");
-            });
-
-            const target = document.querySelector(this.getAttribute("href"));
-            if (target) {
-              target.classList.remove("hidden");
-              target.classList.add("visible");
-            }
-          });
-        });
-
-        // ── About Me dynamic content buttons ──
-        const contentDisplay = document.querySelector("#about-me .content-display");
-
-        const aboutContent = {
-          skills: `
-            <h1>Some Key Skills</h1>
-            <p>My professional skill set is diverse and robust, encompassing expertise in weather forecasting, mesoscale meteorology, and the precision of technical writing. I'm equally dedicated to research, data science, and the application of AI/ML methods to Earth system sciences, with a solid foundation in Python (amongst other languages) to bring it all together. These key skills enable me to tackle complex challenges in meteorology with a multi-faceted approach.</p>`,
-          education: `
-            <h1>Educational Pursuits</h1>
-            <ul>
-              <li>A.S. in Geography, University of North Georgia, 2016-2018</li>
-              <li>B.S. in Atmospheric Science, University of North Carolina Asheville, 2018-2021</li>
-              <li>M.S. in Applied Meteorology, Mississippi State University, 2022-2025</li>
-            </ul>`,
-          research: `
-            <h1>Research Interests</h1>
-            <ul>
-              <li>Boundary Layer Cold Season Dynamics</li>
-              <li>Mesoscale Processes and Severe Convective Weather</li>
-              <li>Artificial Intelligence in the Earth/Atmospheric Sciences</li>
-              <li>Short-Medium Range Atmospheric Predictability</li>
-              <li>Numerical Ensemble Techniques</li>
-            </ul>`,
-          hobbies: `
-            <h1>How I Pass the Time</h1>
-            <p>When I'm not refining my programmatic or meteorological skills, you can find me engaged in a game of chess or savoring a good cup of coffee. Travel and fitness are also parts of my routine, offering a refreshing counterbalance to my professional pursuits. But it's the moments shared with my wife and our golden retriever, Teddy, as well as time with my family, that I cherish the most. These simple joys add a meaningful depth to my life beyond the screen.</p>`,
-        };
-
-        document.querySelectorAll(".info-button").forEach((button) => {
-          button.addEventListener("click", function () {
-            const target = this.getAttribute("data-target");
-            const html = aboutContent[target];
-            if (!html) return;
-
-            contentDisplay.style.transition = "opacity 0.5s";
-            contentDisplay.style.opacity = 0;
-
-            setTimeout(() => {
-              contentDisplay.innerHTML = html;
-              contentDisplay.style.opacity = 1;
-            }, 500);
-          });
-        });
-
-        // ── Notification toast ──
-        function showNotification(message, isSuccess) {
-          const el = document.getElementById("notification-window");
-          const msg = document.getElementById("notification-message");
-
-          msg.textContent = message;
-          el.className = `notification-window ${isSuccess ? "notification-success" : "notification-error"}`;
-          el.style.display = "block";
-          el.style.top = "-5px";
-
-          setTimeout(() => {
-            el.style.top = "-100px";
-            setTimeout(() => {
-              el.style.display = "none";
-            }, 500);
-          }, 5000);
-        }
-
-        // ── Contact form submission ──
-        document.getElementById("contact-form").addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const formData = {
-            name: document.getElementById("name").value,
-            email: document.getElementById("email").value,
-            message: document.getElementById("message").value,
-          };
-
-          fetch("/api/send-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          })
-            .then((response) => {
-              if (!response.ok) throw new Error("Network response was not ok");
-              return response.text();
-            })
-            .then(() => {
-              document.getElementById("name").value = "";
-              document.getElementById("email").value = "";
-              document.getElementById("message").value = "";
-              showNotification("Email sent successfully!", true);
-            })
-            .catch(() => {
-              showNotification("Failed to send email. Please try again later.", false);
-            });
-        });
-      });
-    </script>
-
-    <script>
-      (function () {
-        const canvas = document.getElementById("starfield");
-        const ctx = canvas.getContext("2d");
-        const COLOR_HUES = [0, 60, 240];
-
-        function randomInt(min, max) {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        function wrapCoord(c, max) {
-          if (c >= max) return c % max;
-          if (c <= 0) return max + c;
-          return c;
-        }
-
-        class Star {
-          constructor() {
-            this.x = Math.random() * window.innerWidth;
-            this.y = Math.random() * window.innerHeight;
-            this.radius = Math.random() * 1.2;
-            this.hue = COLOR_HUES[randomInt(0, COLOR_HUES.length - 1)];
-            this.sat = randomInt(50, 100);
-            this.depth = randomInt(1, 3);
-          }
-
-          draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `hsl(${this.hue}, ${this.sat}%, 88%)`;
-            ctx.fill();
-          }
-
-          parallax(hw, hh, mouseX, mouseY) {
-            const factor = this.depth * 0.01 + (this.depth === 3 ? 0.02 : 0);
-            this.x = wrapCoord(this.x - (mouseX - hw) * factor, window.outerWidth);
-            this.y = wrapCoord(this.y - (mouseY - hh) * factor, window.outerHeight);
-          }
-        }
-
-        let stars = [];
-        let starCount = 0;
-
-        function generate() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-          starCount = Math.round((window.outerWidth * window.outerHeight) / 1000);
-          stars = [];
-          for (let i = 0; i < starCount; i++) {
-            stars.push(new Star());
-          }
-          redraw();
-        }
-
-        function redraw() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          for (const star of stars) {
-            star.draw();
-          }
-        }
-
-        generate();
-        window.addEventListener("resize", generate);
-
-        document.addEventListener("mousemove", function (e) {
-          const hw = window.innerWidth / 2;
-          const hh = window.innerHeight / 2;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          for (const star of stars) {
-            star.parallax(hw, hh, e.clientX, e.clientY);
-            star.draw();
-          }
-        });
-      })();
-    </script>
-
-    <script>
-      function openInfoCard(cardId) {
-        const card = document.getElementById(cardId);
-        card.style.display = "flex";
-        setTimeout(() => card.classList.add("visible"), 50);
-      }
-
-      function closeInfoCard(cardId) {
-        const card = document.getElementById(cardId);
-        card.classList.remove("visible");
-        setTimeout(() => (card.style.display = "none"), 500);
-      }
-    </script>
   </body>
 </html>
