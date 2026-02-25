@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Personal portfolio website for Andrew Coleman, Atmospheric Scientist",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "npx serve -l 3000",
     "start": "node api/send-email.js"
