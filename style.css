@@ -172,12 +172,29 @@ canvas {
   font-weight: 400;
 }
 
+.form-group {
+  margin-bottom: 15px;
+}
+
 .form-control,
 textarea {
+  display: block;
+  width: 100%;
   max-width: 400px;
+  padding: 8px 12px;
+  font-size: 14px;
+  line-height: 1.5;
   background-color: #000;
   color: #fff;
   letter-spacing: 1px;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+.form-control:focus,
+textarea:focus {
+  border-color: #46b96c;
+  outline: none;
 }
 
 .send-button {
