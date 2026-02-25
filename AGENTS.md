@@ -8,22 +8,20 @@ Personal portfolio website for Andrew Coleman (Atmospheric Scientist). Static HT
 
 ### Architecture
 
-- **Frontend**: Single-page static site (`index.html`, `style.css`, inline JS). Uses Bootstrap 3.3.7, jQuery 3.6.0, and Font Awesome 4.5.0 via CDN.
-- **Backend**: Express.js API at `api/send-email.js` — handles `POST /api/send-email` to send emails via Nodemailer + iCloud SMTP. Designed as a Vercel-style serverless function.
+- **Frontend**: Single-page static site (`index.html`, `style.css`, inline JS). Uses Lato via Google Fonts and Font Awesome 6.5.1 via CDN. No build step.
+- **Backend**: Express.js API at `api/send-email.js` — handles `POST /api/send-email` to send emails via Nodemailer + iCloud SMTP.
 
 ### Running the dev server
 
-Serve static files from the project root:
-
 ```sh
-npx serve -l 3000
+npm run dev          # serves static files on port 3000
+npm run start        # starts the Express API on port 3001 (needs ICLOUD_EMAIL + ICLOUD_APP_SPECIFIC_PASSWORD env vars)
 ```
 
-The site is fully functional for browsing without the API. The contact form's email submission requires the Express API and iCloud SMTP credentials (`ICLOUD_EMAIL`, `ICLOUD_APP_SPECIFIC_PASSWORD` env vars), which are optional for frontend development.
+The site is fully functional for browsing without the API. The contact form's email submission requires the Express API and iCloud SMTP credentials.
 
 ### Notable caveats
 
-- `package.json` has **no `scripts` block** — there is no `npm start`, `npm run dev`, `npm test`, or `npm run lint` command.
-- `api/send-email.js` calls `app.listen()` with **no port argument**, so it listens on a random port. This file is designed for Vercel serverless deployment, not standalone local use.
-- **No linter, test framework, or build step** is configured in this project.
-- `node_modules/` is committed to the repo (no `.gitignore`).
+- No linter, test framework, or build step is configured.
+- `api/send-email.js` is designed for Vercel-style serverless deployment; locally it runs as a standalone Express server on port 3001.
+- jQuery and Bootstrap have been removed — all styling/interaction is custom.
