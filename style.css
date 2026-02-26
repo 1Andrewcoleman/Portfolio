@@ -223,8 +223,9 @@ textarea:focus {
 
 .send-button {
   margin-top: 15px;
-  height: auto;
+  height: 50px;
   width: 100%;
+  padding: 0;
   overflow: hidden;
   transition: all 0.2s ease-in-out;
 }
@@ -236,19 +237,23 @@ textarea:focus {
 
 .alt-send-button {
   width: 100%;
-  height: 20px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease-in-out;
 }
 
 .send-text {
   display: block;
-  margin-top: 10px;
+  margin-top: 6px;
   font: 700 12px "Lato", sans-serif;
   letter-spacing: 2px;
 }
 
 .alt-send-button:hover {
-  transform: translate3d(0px, -29px, 0px);
+  transform: translate3d(0px, -50px, 0px);
 }
 
 .direct-contact-container {
@@ -269,26 +274,23 @@ textarea:focus {
 }
 
 .list-item {
-  line-height: 4;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 0;
   color: #aaa;
+}
+
+.list-item i {
+  width: 30px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
 .contact-text {
   font: 300 18px "Lato", sans-serif;
   letter-spacing: 1.9px;
   color: #bbb;
-}
-
-.place {
-  margin-left: 62px;
-}
-
-.phone {
-  margin-left: 56px;
-}
-
-.gmail {
-  margin-left: 53px;
 }
 
 .contact-text a {
@@ -386,14 +388,14 @@ hr {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  gap: 30px;
 }
 
 #about-me .about-me-image {
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 600px;
-  margin-left: 10px;
+  flex-shrink: 0;
   margin-top: 100px;
 }
 
@@ -402,8 +404,8 @@ hr {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  max-width: 600px;
-  margin-right: 50px;
+  min-width: 0;
+  flex: 1;
 }
 
 #about-me .text-container p {
@@ -440,8 +442,8 @@ hr {
   --_i: calc(100% - 2 * var(--s));
 }
 
-/* ── Typewriter effect ── */
-.text-container h1 {
+/* ── Typewriter effect (initial heading only) ── */
+.text-container h1.typewriter {
   color: #fff;
   font-family: monospace;
   overflow: hidden;
@@ -450,6 +452,12 @@ hr {
   margin: 0 auto;
   letter-spacing: 0.15em;
   animation: typing 3s steps(30, end), blink-caret 0.5s step-end infinite;
+}
+
+.text-container h1 {
+  color: #fff;
+  font-family: monospace;
+  letter-spacing: 0.15em;
 }
 
 @keyframes typing {
@@ -705,6 +713,14 @@ hr {
   transition: filter 0.3s ease-in-out;
 }
 
+.box:nth-child(1) .image {
+  background-position: top left;
+}
+
+.box:nth-child(4) .image {
+  background-position: top left;
+}
+
 .box:hover .image {
   filter: brightness(0.5) blur(2px);
 }
@@ -793,12 +809,15 @@ hr {
 
 .card-image {
   width: 100%;
-  height: 100%;
-  background-size: cover;
+  min-height: 200px;
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
+  background-color: #111;
   border-radius: 10px;
   border: 3px solid #46b96c;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.6);
+  flex-shrink: 0;
 }
 
 .card-content {
@@ -807,9 +826,10 @@ hr {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  margin-top: 40px;
-  height: 60%;
+  margin-top: 20px;
+  flex: 1;
   width: 85%;
+  overflow-y: auto;
   box-sizing: border-box;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 1);
@@ -1084,7 +1104,6 @@ button:hover {
 
   .contact-text {
     font-size: 1.5rem;
-    margin-left: 20px;
   }
 
   .contact-list {
