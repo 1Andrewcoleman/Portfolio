@@ -367,53 +367,59 @@ hr {
 #about-me {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  justify-content: center;
   color: white;
-  padding: 100px 0;
+  padding: 40px 20px;
   font-family: "Consolas", "Monaco", monospace, sans-serif;
-  font-size: 22px;
+  font-size: 20px;
 }
 
 #about-me .container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  gap: 30px;
+  gap: 20px;
 }
 
 #about-me .about-me-image {
+  order: -1;
   display: flex;
   justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  margin-top: 100px;
 }
 
 #about-me .text-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  min-width: 0;
-  flex: 1;
+  align-items: center;
+  width: 100%;
+}
+
+#about-me .content-display {
+  text-align: center;
+  max-width: 650px;
 }
 
 #about-me .text-container p {
-  line-height: 1.4;
+  line-height: 1.6;
+}
+
+#about-me .text-container ul {
+  text-align: left;
+  display: inline-block;
+  line-height: 1.8;
 }
 
 #about-me h1 {
-  margin-bottom: 20px;
-  font-size: 50px;
+  margin-bottom: 15px;
+  font-size: 42px;
 }
 
 #about-me img {
-  --s: 15px;
+  --s: 12px;
   --b: 2px;
-  --w: 550px;
+  --w: 280px;
   --c: #46b96c;
 
   width: var(--w);
@@ -464,26 +470,23 @@ hr {
 }
 
 /* ── About Me buttons ── */
-#about-me .text-container .buttons-container {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
 .buttons-container {
-  margin-left: 65px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
 }
 
 .info-button {
-  padding: 10px;
+  padding: 10px 18px;
   background-color: #46b96c;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: transform 0.2s, background-color 0.2s;
-  margin-top: 30px;
-  font-size: 2rem;
+  font-size: 1.1rem;
 }
 
 .info-button:hover {
@@ -771,29 +774,21 @@ hr {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 40%;
-  height: 80%;
-  justify-content: center;
+  width: 60%;
+  max-width: 800px;
+  max-height: 90vh;
+  justify-content: flex-start;
   align-items: center;
   opacity: 0;
   transition: opacity 0.4s ease;
   flex-direction: column;
   border-radius: 10px;
-  box-shadow: 5px 5px 15px rgba(128, 128, 128, 0.7);
-  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
   z-index: 50;
-}
-
-.info-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(128, 128, 128, 0.98);
-  border-radius: 10px;
-  z-index: -1;
+  background: #1a1a1a;
+  padding: 20px;
+  gap: 15px;
 }
 
 .info-card.visible {
@@ -802,14 +797,13 @@ hr {
 
 .card-image {
   width: 100%;
-  min-height: 200px;
+  height: 300px;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   background-color: #111;
-  border-radius: 10px;
-  border: 3px solid #46b96c;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  border: 2px solid #46b96c;
   flex-shrink: 0;
 }
 
@@ -817,18 +811,13 @@ hr {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
-  margin-top: 20px;
-  flex: 1;
-  width: 85%;
-  overflow-y: auto;
+  padding: 25px;
+  width: 100%;
   box-sizing: border-box;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 1);
+  border-radius: 8px;
+  background-color: #fff;
   color: #333333;
   border: 2px solid #46b96c;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.6);
 }
 
 .card-content h3 {
@@ -837,16 +826,17 @@ hr {
   color: #333;
   text-align: center;
   margin-bottom: 12px;
-  font-size: 2.4rem;
+  font-size: 1.8rem;
   margin-top: 0;
 }
 
 .card-content p {
-  font-size: 1.2rem;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .card-content button {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 /* ── Global button base ── */
@@ -978,84 +968,25 @@ button:hover {
 
   /* About Me */
   #about-me {
-    flex-direction: column;
-    align-items: center;
-    padding: 20px 10px;
+    padding: 20px 15px;
   }
 
-  #about-me .container {
-    flex-direction: column;
-    align-items: center;
-    height: 71vh;
+  #about-me h1 {
+    font-size: 1.6rem;
   }
 
-  #about-me .about-me-image,
-  #about-me .text-container {
-    max-width: 100%;
-    margin: 0;
-  }
-
-  #about-me .about-me-image {
-    order: -1;
-    width: 90%;
-    height: 18vh;
-    margin-top: 5px;
-    margin-bottom: 5px;
-  }
-
-  #about-me .text-container {
-    order: 2;
-    align-items: center;
-    height: 24vh;
-  }
-
-  #about-me .text-container h1 {
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-
-  #about-me .text-container p {
-    font-size: 1.2rem;
-    text-align: left;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    max-width: 250px;
-    line-height: 1.6;
-  }
-
+  #about-me .text-container p,
   #about-me .text-container ul {
-    font-size: 1.2rem;
-    text-align: left;
-    padding: 0 20px;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    max-width: 250px;
-    line-height: 1.6;
-  }
-
-  #about-me .buttons-container {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    margin: 15px auto 0;
-  }
-
-  #about-me .buttons-container .info-button {
-    margin: 5px;
-    font-size: 1.1rem;
-    padding: 14px 23px;
-    flex: 0 1 auto;
+    font-size: 1rem;
   }
 
   #about-me img {
-    width: 70%;
-    margin-top: 5px;
-    margin-bottom: 10px;
+    --w: 200px;
+  }
+
+  .info-button {
+    font-size: 0.9rem;
+    padding: 8px 14px;
   }
 
   /* Contact */
@@ -1163,34 +1094,20 @@ button:hover {
   }
 
   .info-card {
-    width: 90%;
-    height: auto;
-  }
-
-  .info-card::before {
-    width: 100%;
+    width: 92%;
+    max-height: 85vh;
   }
 
   .card-image {
-    width: 90vw;
-    height: 22vh;
-    margin-bottom: 10px;
-  }
-
-  .card-content {
-    padding: 20px;
-    margin-top: 40px;
-    height: 60%;
-    width: 85%;
-  }
-
-  .card-content p {
-    font-size: 0.8rem;
+    height: 180px;
   }
 
   .card-content h3 {
-    font-size: 1.4rem;
-    margin-top: 0;
+    font-size: 1.3rem;
+  }
+
+  .card-content p {
+    font-size: 0.85rem;
   }
 
   /* Fog layers */
