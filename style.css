@@ -28,6 +28,8 @@ canvas {
 
 /* ── Section base z-index ── */
 .landing-page,
+#about-me,
+#portfolio,
 #contact {
   position: relative;
   z-index: 1;
@@ -641,6 +643,12 @@ hr {
   display: none;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
+}
+
+#about-me.hidden,
+#portfolio.hidden,
+#contact.hidden {
+  display: none;
 }
 
 .visible {
