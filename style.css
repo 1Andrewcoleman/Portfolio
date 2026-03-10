@@ -341,33 +341,44 @@ hr {
   transition: opacity 1s ease-in-out;
 }
 
+#about-me.visible,
+#contact.visible,
+#portfolio.visible {
+  opacity: 1;
+}
+
 /* ── About Me ── */
 #about-me {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  justify-content: center;
   color: white;
-  padding: 100px 0;
-  font-family: "Consolas", "Monaco", monospace, sans-serif;
-  font-size: 22px;
+  height: 100vh;
+  font-family: "Lato", sans-serif;
+  font-size: 18px;
 }
 
 #about-me .container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 48px 56px;
+  background: rgba(12, 17, 26, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
 }
 
 #about-me .about-me-image {
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 600px;
-  margin-left: 10px;
-  margin-top: 100px;
+  flex-shrink: 0;
+  margin-left: 24px;
 }
 
 #about-me .text-container {
@@ -375,23 +386,30 @@ hr {
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  max-width: 600px;
-  margin-right: 50px;
+  flex: 1;
+  min-width: 0;
+  margin-right: 40px;
 }
 
 #about-me .text-container p {
-  line-height: 1.4;
+  line-height: 1.7;
+}
+
+#about-me .content-display {
+  min-height: 180px;
 }
 
 #about-me h1 {
   margin-bottom: 20px;
-  font-size: 50px;
+  font-size: 42px;
+  font-family: "Consolas", "Monaco", monospace;
+  letter-spacing: 0.05em;
 }
 
 #about-me img {
   --s: 15px;
   --b: 2px;
-  --w: 550px;
+  --w: 400px;
   --c: #46b96c;
 
   width: var(--w);
@@ -413,15 +431,11 @@ hr {
   --_i: calc(100% - 2 * var(--s));
 }
 
-/* ── Typewriter effect ── */
-.text-container h1 {
-  color: #fff;
-  font-family: monospace;
+/* ── Typewriter effect (initial heading only) ── */
+.text-container h1.typewriter {
   overflow: hidden;
   border-right: 0.15em solid #46b96c;
   white-space: nowrap;
-  margin: 0 auto;
-  letter-spacing: 0.15em;
   animation: typing 3s steps(30, end), blink-caret 0.5s step-end infinite;
 }
 
@@ -443,7 +457,7 @@ hr {
 }
 
 .buttons-container {
-  margin-left: 65px;
+  margin-left: 0;
 }
 
 .info-button {
@@ -934,15 +948,15 @@ button:hover {
 
   /* About Me */
   #about-me {
-    flex-direction: column;
-    align-items: center;
+    height: auto;
+    min-height: 100vh;
     padding: 20px 10px;
   }
 
   #about-me .container {
     flex-direction: column;
     align-items: center;
-    height: 71vh;
+    padding: 24px 20px;
   }
 
   #about-me .about-me-image,
@@ -953,16 +967,16 @@ button:hover {
 
   #about-me .about-me-image {
     order: -1;
-    width: 90%;
-    height: 18vh;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 16px;
   }
 
   #about-me .text-container {
     order: 2;
     align-items: center;
-    height: 24vh;
+  }
+
+  #about-me .content-display {
+    min-height: auto;
   }
 
   #about-me .text-container h1 {
@@ -972,21 +986,19 @@ button:hover {
   }
 
   #about-me .text-container p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: left;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    max-width: 250px;
+    margin-bottom: 16px;
+    max-width: 300px;
     line-height: 1.6;
   }
 
   #about-me .text-container ul {
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-align: left;
     padding: 0 20px;
-    margin-bottom: 20px;
-    margin-top: 20px;
-    max-width: 250px;
+    margin-bottom: 16px;
+    max-width: 300px;
     line-height: 1.6;
   }
 
@@ -1009,9 +1021,7 @@ button:hover {
   }
 
   #about-me img {
-    width: 70%;
-    margin-top: 5px;
-    margin-bottom: 10px;
+    --w: 250px;
   }
 
   /* Contact */
