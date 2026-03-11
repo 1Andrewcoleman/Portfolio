@@ -148,7 +148,7 @@
     </section>
 
     <section id="contact">
-      <h1>Lets Get In Touch</h1>
+      <h1>Let's Get In Touch</h1>
       <div class="contact-wrapper">
         <form id="contact-form" class="form-horizontal" role="form" method="post">
           <div class="form-group">
@@ -290,6 +290,9 @@
             const target = this.getAttribute("data-target");
             const html = aboutContent[target];
             if (!html) return;
+
+            document.querySelectorAll(".info-button").forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
 
             contentDisplay.style.transition = "opacity 0.5s";
             contentDisplay.style.opacity = 0;
