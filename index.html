@@ -112,6 +112,7 @@
         </div>
       </div>
 
+      <div id="infoCardBackdrop" class="info-card-backdrop"></div>
       <div id="infoCard1" class="info-card">
         <div class="card-image" style="background-image: url('IMG_3721.JPG');"></div>
         <div class="card-content">
@@ -429,14 +430,25 @@
     <script>
       function openInfoCard(cardId) {
         const card = document.getElementById(cardId);
+        const backdrop = document.getElementById("infoCardBackdrop");
+        backdrop.style.display = "block";
         card.style.display = "flex";
-        setTimeout(() => card.classList.add("visible"), 50);
+        setTimeout(() => {
+          backdrop.classList.add("visible");
+          card.classList.add("visible");
+        }, 50);
+        backdrop.onclick = function () { closeInfoCard(cardId); };
       }
 
       function closeInfoCard(cardId) {
         const card = document.getElementById(cardId);
+        const backdrop = document.getElementById("infoCardBackdrop");
         card.classList.remove("visible");
-        setTimeout(() => (card.style.display = "none"), 500);
+        backdrop.classList.remove("visible");
+        setTimeout(() => {
+          card.style.display = "none";
+          backdrop.style.display = "none";
+        }, 500);
       }
     </script>
   </body>
