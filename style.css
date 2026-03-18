@@ -1,3 +1,21 @@
+:root {
+  --accent: #46b96c;
+  --accent-hover: #3aa55d;
+  --bg-dark: #0c1116;
+  --bg-card: rgba(12, 17, 26, 0.55);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-accent: rgba(70, 185, 108, 0.4);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.4);
+  --blur-amount: 18px;
+  --radius-lg: 24px;
+  --radius-md: 14px;
+  --radius-sm: 8px;
+  --font-mono: "Consolas", "Monaco", monospace;
+  --font-sans: "Lato", sans-serif;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,11 +28,10 @@ html {
 
 body {
   background-color: #2e2e2e;
-  color: #ffffff;
+  color: var(--text-primary);
   height: 100%;
   overflow: hidden;
-  font-family: "SF Mono", "Menlo", "Monaco", "Consolas", "Liberation Mono",
-    "Courier New", monospace, sans-serif;
+  font-family: var(--font-sans);
 }
 
 /* ── Starfield Canvas ── */
@@ -40,7 +57,7 @@ canvas {
   height: 100vh;
   display: flex;
   justify-content: center;
-  background-image: url("landing1.jpeg");
+  background-image: url("assets/images/hero.jpeg");
   background-size: cover;
   background-position: center;
   align-items: center;
@@ -70,7 +87,7 @@ canvas {
 
 .social-media-icons a:hover {
   text-decoration: none;
-  color: #46b96c;
+  color: var(--accent);
   transform: translateY(-2px);
 }
 
@@ -171,7 +188,7 @@ canvas {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #46b96c;
+  background: var(--accent);
   border-radius: 2px;
 }
 
@@ -183,11 +200,10 @@ canvas {
   align-items: center;
   height: 100vh;
   width: 100%;
-  font-family: "Lato", sans-serif;
 }
 
 #contact h1 {
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.05em;
   font-size: 2.4rem;
   margin-bottom: 24px;
@@ -203,16 +219,15 @@ canvas {
   position: relative;
   width: 90%;
   max-width: 1020px;
-  background: rgba(12, 17, 26, 0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  background: var(--bg-card);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
 }
 
 .form-horizontal {
   max-width: 460px;
-  font-family: "Lato", sans-serif;
   font-weight: 400;
 }
 
@@ -227,10 +242,10 @@ textarea {
   max-width: 460px;
   padding: 12px 16px;
   font-size: 14px;
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.5;
   background-color: rgba(255, 255, 255, 0.06);
-  color: #fff;
+  color: var(--text-primary);
   letter-spacing: 0.5px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
@@ -239,7 +254,7 @@ textarea {
 
 .form-control:focus,
 textarea:focus {
-  border-color: #46b96c;
+  border-color: var(--accent);
   background-color: rgba(255, 255, 255, 0.1);
   outline: none;
 }
@@ -247,7 +262,7 @@ textarea:focus {
 .form-control::placeholder,
 textarea::placeholder {
   color: rgba(255, 255, 255, 0.35);
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-sans);
   letter-spacing: 1.5px;
   font-size: 12px;
 }
@@ -256,11 +271,11 @@ textarea::placeholder {
   margin-top: 16px;
   width: 100%;
   padding: 14px 32px;
-  background: #46b96c;
+  background: var(--accent);
   border: none;
   border-radius: 10px;
-  color: #fff;
-  font: 600 14px "Lato", sans-serif;
+  color: var(--text-primary);
+  font: 600 14px var(--font-sans);
   letter-spacing: 1.5px;
   cursor: pointer;
   transition: background-color 0.25s, transform 0.15s;
@@ -268,10 +283,10 @@ textarea::placeholder {
 }
 
 .send-button:hover {
-  background: #3aa55d;
+  background: var(--accent-hover);
   transform: translateY(-1px);
   border: none;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .alt-send-button {
@@ -283,7 +298,7 @@ textarea::placeholder {
 }
 
 .send-text {
-  font: 600 13px "Lato", sans-serif;
+  font: 600 13px var(--font-sans);
   letter-spacing: 2px;
   margin: 0;
 }
@@ -320,9 +335,9 @@ textarea::placeholder {
 }
 
 .contact-text {
-  font: 300 16px "Lato", sans-serif;
+  font: 300 16px var(--font-sans);
   letter-spacing: 0.5px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
 }
 
 .place,
@@ -332,13 +347,13 @@ textarea::placeholder {
 }
 
 .contact-text a {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .contact-text a:hover {
-  color: #46b96c;
+  color: var(--accent);
 }
 
 /* ── Contact social icons ── */
@@ -382,12 +397,12 @@ textarea::placeholder {
   height: 48px;
   border-radius: 50%;
   opacity: 0;
-  box-shadow: 0 0 0 1px rgba(70, 185, 108, 0.5);
+  box-shadow: 0 0 0 1px var(--border-accent);
   transition: all 0.25s ease-in-out;
 }
 
 .social-media-list li:hover {
-  background-color: #46b96c;
+  background-color: var(--accent);
 }
 
 .social-media-list li:hover::after {
@@ -408,7 +423,7 @@ hr {
 .contact-note {
   font-size: 13px;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-muted);
   line-height: 1.6;
   margin-top: 4px;
 }
@@ -434,7 +449,6 @@ hr {
   justify-content: center;
   color: white;
   height: 100vh;
-  font-family: "Lato", sans-serif;
   font-size: 18px;
 }
 
@@ -446,11 +460,11 @@ hr {
   max-width: 1200px;
   margin: 0 auto;
   padding: 48px 56px;
-  background: rgba(12, 17, 26, 0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  background: var(--bg-card);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
 }
 
 #about-me .about-me-image {
@@ -482,7 +496,7 @@ hr {
 #about-me h1 {
   margin-bottom: 20px;
   font-size: 42px;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.05em;
 }
 
@@ -490,7 +504,7 @@ hr {
   --s: 8px;
   --b: 2px;
   --w: 400px;
-  --c: #46b96c;
+  --c: var(--accent);
 
   width: var(--w);
   aspect-ratio: 1;
@@ -514,7 +528,7 @@ hr {
 /* ── Typewriter effect (initial heading only) ── */
 .text-container h1.typewriter {
   overflow: hidden;
-  border-right: 0.15em solid #46b96c;
+  border-right: 0.15em solid var(--accent);
   white-space: nowrap;
   animation: typing 3s steps(30, end), blink-caret 0.5s step-end infinite;
 }
@@ -526,7 +540,7 @@ hr {
 
 @keyframes blink-caret {
   from, to { border-color: transparent; }
-  50% { border-color: #46b96c; }
+  50% { border-color: var(--accent); }
 }
 
 /* ── About Me buttons ── */
@@ -543,14 +557,14 @@ hr {
 .info-button {
   padding: 10px 18px;
   background-color: transparent;
-  color: #46b96c;
-  border: 1px solid #46b96c;
-  border-radius: 8px;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: transform 0.2s, background-color 0.2s, color 0.2s;
   margin-top: 30px;
   font-size: 1rem;
-  font-family: "Lato", sans-serif;
+  font-family: var(--font-sans);
   font-weight: 600;
   letter-spacing: 0.5px;
 }
@@ -558,20 +572,20 @@ hr {
 .info-button:hover {
   transform: translateY(-2px);
   background-color: rgba(70, 185, 108, 0.15);
-  border: 1px solid #46b96c;
-  color: #46b96c;
+  border: 1px solid var(--accent);
+  color: var(--accent);
 }
 
 .info-button.active {
-  background-color: #46b96c;
-  color: #fff;
-  border-color: #46b96c;
+  background-color: var(--accent);
+  color: var(--text-primary);
+  border-color: var(--accent);
 }
 
 .info-button.active:hover {
-  background-color: #3aa55d;
-  color: #fff;
-  border-color: #3aa55d;
+  background-color: var(--accent-hover);
+  color: var(--text-primary);
+  border-color: var(--accent-hover);
 }
 
 /* ── Vertical Navbar ── */
@@ -625,7 +639,7 @@ hr {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background-color: #46b96c;
+  background-color: var(--accent);
   transform: scale(0);
   transition: transform 0.1s ease-in-out;
   z-index: 0;
@@ -760,13 +774,12 @@ hr {
   align-items: center;
   height: 100vh;
   padding: 40px 0;
-  font-family: "Lato", sans-serif;
 }
 
 #portfolio h1 {
   font-size: 2.6rem;
   text-align: center;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.05em;
   margin-bottom: 8px;
 }
@@ -778,10 +791,10 @@ hr {
   transition: transform 0.3s ease-in-out;
   margin-top: 16px;
   padding: 32px 40px;
-  background: rgba(12, 17, 26, 0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--bg-card);
+  backdrop-filter: blur(var(--blur-amount));
+  -webkit-backdrop-filter: blur(var(--blur-amount));
+  border: 1px solid var(--border-subtle);
   border-radius: 20px;
 }
 
@@ -800,15 +813,15 @@ hr {
   background-size: cover;
   background-position: center;
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-  border-radius: 14px;
-  border: 1px solid rgba(70, 185, 108, 0.4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-accent);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .box:hover {
   transform: scale(1.04);
   z-index: 2;
-  box-shadow: 0 8px 32px rgba(70, 185, 108, 0.5);
+  box-shadow: 0 8px 32px var(--border-accent);
 }
 
 .image {
@@ -832,7 +845,7 @@ hr {
   width: 100%;
   transform: translateY(100%);
   transition: transform 0.3s ease-in-out;
-  border-radius: 0 0 14px 14px;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
   padding: 12px 16px;
 }
 
@@ -844,7 +857,7 @@ hr {
 .description h3 {
   margin: 0 0 6px;
   font-size: 16px;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
   letter-spacing: 0.03em;
 }
 
@@ -916,8 +929,8 @@ hr {
   flex: 0 0 35%;
   background-size: cover;
   background-position: center;
-  border-radius: 14px;
-  border: 2px solid rgba(70, 185, 108, 0.5);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-accent);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   margin-top: 16px;
 }
@@ -933,10 +946,10 @@ hr {
   flex: 1;
   width: 92%;
   box-sizing: border-box;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   background-color: rgba(255, 255, 255, 0.97);
   color: #333333;
-  border: 1px solid rgba(70, 185, 108, 0.3);
+  border: 1px solid var(--border-accent);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   overflow-y: auto;
 }
@@ -949,13 +962,12 @@ hr {
   margin-bottom: 12px;
   font-size: 1.6rem;
   margin-top: 0;
-  font-family: "Consolas", "Monaco", monospace;
+  font-family: var(--font-mono);
 }
 
 .card-content p {
   font-size: 1rem;
   line-height: 1.6;
-  font-family: "Lato", sans-serif;
 }
 
 .card-content button {
@@ -964,7 +976,7 @@ hr {
 
 /* ── Global button base ── */
 button {
-  background-color: #4caf50;
+  background-color: var(--accent);
   border: none;
   color: white;
   padding: 15px 32px;
@@ -976,12 +988,13 @@ button {
   cursor: pointer;
   border-radius: 10px;
   transition-duration: 0.4s;
+  font-family: var(--font-sans);
 }
 
 button:hover {
   background-color: white;
   color: black;
-  border: 2px solid #4caf50;
+  border: 2px solid var(--accent);
 }
 
 /* ── Mobile Warning Modal ── */
@@ -1061,7 +1074,7 @@ button:hover {
   }
 
   .landing-page {
-    background-image: url("landing1.jpeg");
+    background-image: url("assets/images/hero.jpeg");
     background-size: cover;
     background-position: -650px 0;
   }
