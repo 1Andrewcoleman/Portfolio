@@ -1100,190 +1100,110 @@ button:hover {
    Mobile Responsive — max-width: 768px
    ══════════════════════════════════════ */
 @media (max-width: 768px) {
-  /* Landing page */
-  .social-media-icons {
-    right: 30px;
-    z-index: 10;
+  /* ── Navbar → bottom tab bar ── */
+  .vertical-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    transform: none;
+    flex-direction: row;
+    justify-content: space-around;
+    border-radius: 20px 20px 0 0;
+    padding: 10px 0;
+    background-color: rgba(20, 20, 30, 0.9);
   }
 
-  .landing-page {
-    background-image: url("assets/images/hero.jpeg");
-    background-size: cover;
-    background-position: -650px 0;
+  .vertical-navbar ul {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
   }
 
-  .landing-text {
-    left: -100%;
-    opacity: 0;
-    animation: slide-in 1s forwards;
-  }
-
-  .landing-text h1 {
-    font-size: 4rem;
-  }
-
-  .landing-text h2 {
-    font-size: 1.8rem;
-  }
-
-  .landing-text p {
-    font-size: 1.1rem;
-    max-width: 250px;
-  }
-
-  .landing-text button {
-    font-size: 1.1rem;
-  }
-
-  /* About Me */
-  #about-me {
-    height: auto;
-    min-height: 100vh;
-    padding: 20px 10px;
-  }
-
-  #about-me .container {
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 20px;
-  }
-
-  #about-me .about-me-image,
-  #about-me .text-container {
-    max-width: 100%;
+  .vertical-navbar li {
     margin: 0;
   }
 
-  #about-me .about-me-image {
-    order: -1;
-    margin-bottom: 16px;
+  .vertical-navbar a {
+    font-size: 22px;
+    width: 44px;
+    height: 44px;
   }
 
-  #about-me .text-container {
-    order: 2;
-    align-items: center;
+  .vertical-navbar a::after {
+    display: none;
   }
 
-  #about-me .content-display {
-    min-height: auto;
+  /* ── Landing page ── */
+  .landing-page {
+    background-position: 65% center;
   }
 
-  #about-me .text-container h1 {
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 10px;
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0.3) 50%,
+      transparent 100%
+    );
   }
 
-  #about-me .text-container p {
-    font-size: 1rem;
-    text-align: left;
-    margin-bottom: 16px;
-    max-width: 300px;
-    line-height: 1.6;
+  .landing-text {
+    padding: 0 24px;
+    align-self: flex-start;
+    padding-top: 100px;
   }
 
-  #about-me .text-container ul {
-    font-size: 1rem;
-    text-align: left;
-    padding: 0 20px;
-    margin-bottom: 16px;
-    max-width: 300px;
-    line-height: 1.6;
+  .social-media-icons {
+    top: 16px;
+    right: 16px;
+    gap: 12px;
+    padding: 8px 14px;
   }
 
-  #about-me .buttons-container {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    margin: 15px auto 0;
+  .social-media-icons a {
+    font-size: 18px;
   }
 
-  #about-me .buttons-container .info-button {
-    margin: 4px;
-    font-size: 0.85rem;
-    padding: 10px 16px;
-    flex: 0 1 auto;
+  /* ── About Me ── */
+  #about-me {
+    padding: 60px 16px 80px;
   }
 
-  #about-me img {
-    --w: 250px;
-  }
-
-  /* Contact */
-  #contact {
-    height: auto;
-    min-height: 100vh;
-    padding: 20px 10px;
-  }
-
-  #contact h1 {
-    font-size: 1.6rem;
-  }
-
-  .contact-wrapper {
+  .about-card {
     flex-direction: column;
     padding: 24px 20px;
-    align-items: center;
+    text-align: center;
+    gap: 20px;
   }
 
-  .direct-contact-container,
-  .form-horizontal {
-    width: 100%;
-    max-width: 320px;
-    padding: 0;
+  .about-photo {
+    order: -1;
   }
 
-  .direct-contact-container {
-    margin-top: 20px;
-    margin-left: 0;
+  .about-photo img {
+    --w: 220px;
   }
 
-  .form-control,
-  textarea {
-    max-width: 100%;
+  .about-intro {
+    text-align: left;
   }
 
-  textarea.form-control {
-    height: 120px;
+  .about-intro h2 {
+    font-size: 1.6rem;
+    text-align: center;
   }
 
-  .list-item {
-    font-size: 1rem;
+  .about-details {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
-  .contact-text {
-    font-size: 0.9rem;
-  }
-
-  .social-media-list {
-    gap: 6px;
-  }
-
-  .social-media-list li {
-    height: 42px;
-    width: 42px;
-    font-size: 1.1rem;
-  }
-
-  .social-media-list li::after {
-    width: 42px;
-    height: 42px;
-  }
-
-  .send-button {
-    width: 100%;
-    padding: 12px;
-  }
-
-  /* Portfolio */
+  /* ── Portfolio ── */
   #portfolio {
-    height: auto;
-    min-height: 100vh;
-    padding: 20px 10px;
+    padding: 60px 16px 80px;
   }
 
   #portfolio h1 {
@@ -1291,29 +1211,45 @@ button:hover {
   }
 
   .gallery {
-    gap: 12px;
     grid-template-columns: 1fr;
     padding: 16px;
+    gap: 14px;
   }
 
   .box {
-    width: 80vw;
-    height: 22vh;
+    width: 100%;
+    height: auto;
+    overflow: visible;
   }
 
-  .description h3 {
-    font-size: 12px;
-    margin-bottom: 4px;
+  .box .image {
+    height: 200px;
+    border-radius: var(--radius-md);
   }
 
-  .description p {
-    font-size: 0.7rem;
-    line-height: 1.4;
+  /* On mobile, show descriptions always below image */
+  .card-label {
+    display: none;
   }
 
-  .description button {
+  .card-overlay {
+    position: static;
+    opacity: 1;
+    background: transparent;
+    padding: 10px 4px;
+    text-align: left;
+    align-items: flex-start;
+  }
+
+  .card-overlay p {
+    color: var(--text-secondary);
     font-size: 0.85rem;
-    padding: 4px 10px;
+    max-width: 100%;
+    margin-bottom: 8px;
+  }
+
+  .box:hover .image {
+    filter: none;
   }
 
   .info-card {
@@ -1343,7 +1279,54 @@ button:hover {
     font-size: 1.2rem;
   }
 
-  /* Fog layers */
+  /* ── Contact ── */
+  #contact {
+    padding: 60px 16px 100px;
+  }
+
+  #contact h1 {
+    font-size: 1.6rem;
+  }
+
+  .contact-wrapper {
+    flex-direction: column;
+    padding: 24px 20px;
+    align-items: center;
+  }
+
+  .direct-contact-container,
+  .form-horizontal {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .direct-contact-container {
+    margin-top: 20px;
+    margin-left: 0;
+  }
+
+  .form-control,
+  textarea {
+    max-width: 100%;
+  }
+
+  .send-button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .social-media-list li {
+    height: 42px;
+    width: 42px;
+  }
+
+  .social-media-list li::after {
+    width: 42px;
+    height: 42px;
+  }
+
+  /* ── Fog layers ── */
   #foglayer_01 .image01,
   #foglayer_01 .image02,
   #foglayer_02 .image01,
@@ -1351,35 +1334,5 @@ button:hover {
   #foglayer_03 .image01,
   #foglayer_03 .image02 {
     width: 100%;
-  }
-}
-
-@keyframes slide-in {
-  100% {
-    left: 40px;
-    opacity: 1;
-  }
-}
-
-/* ── Small screens — max-width: 600px ── */
-@media (max-width: 600px) {
-  .vertical-navbar {
-    padding: 7px;
-    border-radius: 10px;
-  }
-
-  .vertical-navbar li {
-    margin-bottom: 13px;
-  }
-
-  .vertical-navbar a {
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
-  }
-
-  .vertical-navbar a::after {
-    font-size: 10px;
-    right: 55px;
   }
 }
