@@ -341,6 +341,12 @@ hr {
   transition: opacity 1s ease-in-out;
 }
 
+#about-me.visible,
+#contact.visible,
+#portfolio.visible {
+  opacity: 1;
+}
+
 /* ── About Me ── */
 #about-me {
   display: flex;
@@ -624,13 +630,13 @@ hr {
 
 /* ── Section visibility ── */
 .hidden {
-  display: none;
+  display: none !important;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
 
 .visible {
-  display: block;
+  display: revert !important;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
