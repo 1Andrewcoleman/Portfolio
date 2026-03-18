@@ -59,7 +59,7 @@
       <div class="container">
         <div class="text-container">
           <div class="content-display">
-            <h1>A little about me</h1>
+            <h1 class="typewriter">A little about me</h1>
             <p>Hi there! Thanks for stopping by. I am an Atmospheric Scientist specializing in short-term atmospheric predictability, artificial intelligence, and earth science/atmospheric data visualization. Oh, and coffee.</p>
           </div>
           <div class="buttons-container">
@@ -112,6 +112,7 @@
         </div>
       </div>
 
+      <div id="infoCardBackdrop" class="info-card-backdrop"></div>
       <div id="infoCard1" class="info-card">
         <div class="card-image" style="background-image: url('IMG_3721.JPG');"></div>
         <div class="card-content">
@@ -147,7 +148,7 @@
     </section>
 
     <section id="contact">
-      <h1>Lets Get In Touch</h1>
+      <h1>Let's Get In Touch</h1>
       <div class="contact-wrapper">
         <form id="contact-form" class="form-horizontal" role="form" method="post">
           <div class="form-group">
@@ -191,6 +192,7 @@
             </li>
           </ul>
           <hr>
+          <p class="contact-note">Open to research collaboration, forecasting projects, and new opportunities in atmospheric science.</p>
         </div>
       </div>
     </section>
@@ -289,6 +291,9 @@
             const target = this.getAttribute("data-target");
             const html = aboutContent[target];
             if (!html) return;
+
+            document.querySelectorAll(".info-button").forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
 
             contentDisplay.style.transition = "opacity 0.5s";
             contentDisplay.style.opacity = 0;
@@ -429,14 +434,25 @@
     <script>
       function openInfoCard(cardId) {
         const card = document.getElementById(cardId);
+        const backdrop = document.getElementById("infoCardBackdrop");
+        backdrop.style.display = "block";
         card.style.display = "flex";
-        setTimeout(() => card.classList.add("visible"), 50);
+        setTimeout(() => {
+          backdrop.classList.add("visible");
+          card.classList.add("visible");
+        }, 50);
+        backdrop.onclick = function () { closeInfoCard(cardId); };
       }
 
       function closeInfoCard(cardId) {
         const card = document.getElementById(cardId);
+        const backdrop = document.getElementById("infoCardBackdrop");
         card.classList.remove("visible");
-        setTimeout(() => (card.style.display = "none"), 500);
+        backdrop.classList.remove("visible");
+        setTimeout(() => {
+          card.style.display = "none";
+          backdrop.style.display = "none";
+        }, 500);
       }
     </script>
   </body>
