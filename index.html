@@ -14,14 +14,15 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <canvas id="starfield"></canvas>
+    <a href="#about-me" class="skip-link">Skip to content</a>
+    <canvas id="starfield" aria-hidden="true"></canvas>
 
-    <nav class="vertical-navbar">
+    <nav class="vertical-navbar" aria-label="Main navigation">
       <ul>
-        <li><a href="#landing-page" data-description="Home"><i class="fa-solid fa-house"></i></a></li>
-        <li><a href="#about-me" data-description="About Me"><i class="fa-solid fa-user"></i></a></li>
-        <li><a href="#portfolio" data-description="Musings in Meteorology"><i class="fa-solid fa-cloud"></i></a></li>
-        <li><a href="#contact" data-description="Get In Touch"><i class="fa-solid fa-envelope"></i></a></li>
+        <li><a href="#landing-page" data-description="Home" aria-label="Home"><i class="fa-solid fa-house" aria-hidden="true"></i></a></li>
+        <li><a href="#about-me" data-description="About Me" aria-label="About Me"><i class="fa-solid fa-user" aria-hidden="true"></i></a></li>
+        <li><a href="#portfolio" data-description="Musings in Meteorology" aria-label="Portfolio"><i class="fa-solid fa-cloud" aria-hidden="true"></i></a></li>
+        <li><a href="#contact" data-description="Get In Touch" aria-label="Contact"><i class="fa-solid fa-envelope" aria-hidden="true"></i></a></li>
       </ul>
     </nav>
 
@@ -160,7 +161,7 @@
       </div>
 
       <div id="infoCardBackdrop" class="info-card-backdrop"></div>
-      <div id="infoCard1" class="info-card">
+      <div id="infoCard1" class="info-card" role="dialog" aria-modal="true" aria-label="AI Undergrad Research details">
         <div class="card-image" style="background-image: url('assets/images/research-poster.jpg');"></div>
         <div class="card-content">
           <h3>AI Undergrad Research</h3>
@@ -168,7 +169,7 @@
           <button class="close-card">Close</button>
         </div>
       </div>
-      <div id="infoCard2" class="info-card">
+      <div id="infoCard2" class="info-card" role="dialog" aria-modal="true" aria-label="Data Visualization details">
         <div class="card-image" style="background-image: url('assets/images/geopotential-height.png');"></div>
         <div class="card-content">
           <h3>Data Visualization</h3>
@@ -176,7 +177,7 @@
           <button class="close-card">Close</button>
         </div>
       </div>
-      <div id="infoCard3" class="info-card">
+      <div id="infoCard3" class="info-card" role="dialog" aria-modal="true" aria-label="Storm Chasing details">
         <div class="card-image" style="background-image: url('assets/images/storm-chasing.jpg');"></div>
         <div class="card-content">
           <h3>Storm Chasing / Photography</h3>
@@ -184,7 +185,7 @@
           <button class="close-card">Close</button>
         </div>
       </div>
-      <div id="infoCard4" class="info-card">
+      <div id="infoCard4" class="info-card" role="dialog" aria-modal="true" aria-label="Forecast Analysis details">
         <div class="card-image" style="background-image: url('assets/images/forecast.gif');"></div>
         <div class="card-content">
           <h3>Forecast Analysis</h3>
@@ -197,7 +198,7 @@
     <section id="contact">
       <h1>Let's Get In Touch</h1>
       <div class="contact-wrapper">
-        <form id="contact-form" class="form-horizontal" role="form" method="post">
+        <form id="contact-form" class="form-horizontal" role="form" aria-label="Contact form" method="post">
           <div class="form-group">
             <input type="text" class="form-control" id="name" placeholder="NAME" name="name" required>
           </div>
@@ -248,251 +249,6 @@
       <p id="notification-message"></p>
     </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        // ── Smooth scroll navigation ──
-        document.querySelectorAll(".vertical-navbar a").forEach((link) => {
-          link.addEventListener("click", function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute("href"));
-            if (target) {
-              target.scrollIntoView({ behavior: "smooth", block: "start" });
-              history.pushState(null, null, this.getAttribute("href"));
-            }
-          });
-        });
-
-        // ── Active nav indicator via IntersectionObserver ──
-        const sections = document.querySelectorAll("section, .landing-page");
-        const navLinks = document.querySelectorAll(".vertical-navbar a");
-
-        const sectionObserver = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                const id = entry.target.id;
-                navLinks.forEach((link) => {
-                  link.classList.toggle(
-                    "active",
-                    link.getAttribute("href") === `#${id}`
-                  );
-                });
-              }
-            });
-          },
-          { threshold: 0.4 }
-        );
-
-        sections.forEach((section) => sectionObserver.observe(section));
-
-        // ── Scroll-triggered entrance animations ──
-        const animObserver = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("in-view");
-              }
-            });
-          },
-          { threshold: 0.1 }
-        );
-
-        document.querySelectorAll("section").forEach((s) => animObserver.observe(s));
-
-        // ── Deep link support ──
-        if (window.location.hash) {
-          const target = document.querySelector(window.location.hash);
-          if (target) {
-            setTimeout(() => target.scrollIntoView(), 100);
-          }
-        }
-
-        // ── Notification toast ──
-        function showNotification(message, isSuccess) {
-          const el = document.getElementById("notification-window");
-          const msg = document.getElementById("notification-message");
-
-          msg.textContent = message;
-          el.className = `notification-window ${isSuccess ? "notification-success" : "notification-error"}`;
-          el.style.display = "block";
-          el.style.top = "-5px";
-
-          setTimeout(() => {
-            el.style.top = "-100px";
-            setTimeout(() => {
-              el.style.display = "none";
-            }, 500);
-          }, 5000);
-        }
-
-        // ── Contact form submission ──
-        document.getElementById("contact-form").addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const formData = {
-            name: document.getElementById("name").value,
-            email: document.getElementById("email").value,
-            message: document.getElementById("message").value,
-          };
-
-          fetch("/api/send-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData),
-          })
-            .then((response) => {
-              if (!response.ok) throw new Error("Network response was not ok");
-              return response.text();
-            })
-            .then(() => {
-              document.getElementById("name").value = "";
-              document.getElementById("email").value = "";
-              document.getElementById("message").value = "";
-              showNotification("Email sent successfully!", true);
-            })
-            .catch(() => {
-              showNotification("Failed to send email. Please try again later.", false);
-            });
-        });
-      });
-    </script>
-
-    <script>
-      (function () {
-        const canvas = document.getElementById("starfield");
-        const ctx = canvas.getContext("2d");
-        const COLOR_HUES = [0, 60, 240];
-
-        function randomInt(min, max) {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        function wrapCoord(c, max) {
-          if (c >= max) return c % max;
-          if (c <= 0) return max + c;
-          return c;
-        }
-
-        class Star {
-          constructor() {
-            this.x = Math.random() * window.innerWidth;
-            this.y = Math.random() * window.innerHeight;
-            this.radius = Math.random() * 1.2;
-            this.hue = COLOR_HUES[randomInt(0, COLOR_HUES.length - 1)];
-            this.sat = randomInt(50, 100);
-            this.depth = randomInt(1, 3);
-          }
-
-          draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `hsl(${this.hue}, ${this.sat}%, 88%)`;
-            ctx.fill();
-          }
-
-          parallax(hw, hh, mouseX, mouseY) {
-            const factor = this.depth * 0.01 + (this.depth === 3 ? 0.02 : 0);
-            this.x = wrapCoord(this.x - (mouseX - hw) * factor, window.outerWidth);
-            this.y = wrapCoord(this.y - (mouseY - hh) * factor, window.outerHeight);
-          }
-        }
-
-        let stars = [];
-        let starCount = 0;
-
-        function generate() {
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-          starCount = Math.round((window.outerWidth * window.outerHeight) / 1000);
-          stars = [];
-          for (let i = 0; i < starCount; i++) {
-            stars.push(new Star());
-          }
-          redraw();
-        }
-
-        function redraw() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          for (const star of stars) {
-            star.draw();
-          }
-        }
-
-        generate();
-        window.addEventListener("resize", generate);
-
-        document.addEventListener("mousemove", function (e) {
-          const hw = window.innerWidth / 2;
-          const hh = window.innerHeight / 2;
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          for (const star of stars) {
-            star.parallax(hw, hh, e.clientX, e.clientY);
-            star.draw();
-          }
-        });
-      })();
-    </script>
-
-    <script>
-      // ── Portfolio info card open/close ──
-      function openInfoCard(cardId) {
-        const card = document.getElementById(cardId);
-        const backdrop = document.getElementById("infoCardBackdrop");
-        backdrop.style.display = "block";
-        card.style.display = "flex";
-        setTimeout(() => {
-          backdrop.classList.add("visible");
-          card.classList.add("visible");
-        }, 50);
-        backdrop.onclick = function () { closeInfoCard(cardId); };
-      }
-
-      function closeInfoCard(cardId) {
-        const card = document.getElementById(cardId);
-        const backdrop = document.getElementById("infoCardBackdrop");
-        card.classList.remove("visible");
-        backdrop.classList.remove("visible");
-        setTimeout(() => {
-          card.style.display = "none";
-          backdrop.style.display = "none";
-        }, 500);
-      }
-
-      // ── Portfolio card event delegation ──
-      document.addEventListener("DOMContentLoaded", function () {
-        // Learn More buttons → open info card
-        document.querySelectorAll(".btn-learn-more").forEach(function (btn) {
-          btn.addEventListener("click", function (e) {
-            e.stopPropagation();
-            const box = this.closest(".box");
-            if (box && box.dataset.card) {
-              openInfoCard(box.dataset.card);
-            }
-          });
-        });
-
-        // Close buttons inside info cards
-        document.querySelectorAll(".close-card").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            const card = this.closest(".info-card");
-            if (card) closeInfoCard(card.id);
-          });
-        });
-
-        // Touch toggle for portfolio cards on mobile
-        if ("ontouchstart" in window) {
-          document.querySelectorAll(".box").forEach(function (box) {
-            box.addEventListener("click", function (e) {
-              if (e.target.closest(".btn-learn-more")) return;
-              // Close any other open cards
-              document.querySelectorAll(".box.touch-active").forEach(function (b) {
-                if (b !== box) b.classList.remove("touch-active");
-              });
-              this.classList.toggle("touch-active");
-            });
-          });
-        }
-      });
-    </script>
+    <script src="main.js" defer></script>
   </body>
 </html>

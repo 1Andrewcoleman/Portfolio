@@ -35,6 +35,26 @@ body {
   font-family: var(--font-sans);
 }
 
+/* ── Skip to content (accessibility) ── */
+.skip-link {
+  position: absolute;
+  top: -50px;
+  left: 16px;
+  background: var(--accent);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  z-index: 200;
+  transition: top 0.3s ease;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 16px;
+}
+
 /* ── Starfield Canvas ── */
 canvas {
   background: radial-gradient(ellipse at bottom, #0c1116 0%, #161927 100%);
