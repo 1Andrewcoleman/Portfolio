@@ -170,8 +170,8 @@ var ATMOSPHERE = {
   FOG_CLEAR_RADIUS: 80,
 
   HERO_FOG_NOISE_SCALE: 0.005,
-  HERO_FOG_DENSITY: 0.45,
-  HERO_FOG_DRIFT_SPEED: 0.2,
+  HERO_FOG_DENSITY: 0.55,
+  HERO_FOG_DRIFT_SPEED: 0.18,
 };
 
 (function () {
@@ -356,20 +356,26 @@ var ATMOSPHERE = {
   var heroFogImageData = null;
   var heroFogW = 0, heroFogH = 0;
 
+  var heroW = 0, heroH = 0;
+
+  function resizeHeroFog() {
+    if (!heroFogCanvas) return;
+    var parent = heroFogCanvas.parentElement;
+    heroW = parent.offsetWidth;
+    heroH = parent.offsetHeight;
+    if (heroFogCanvas.width !== heroW || heroFogCanvas.height !== heroH) {
+      heroFogCanvas.width = heroW;
+      heroFogCanvas.height = heroH;
+    }
+  }
+
   function renderHeroFog(time) {
-    if (!heroFogCtx) return;
+    if (!heroFogCtx || heroW === 0) return;
     if (window.scrollY > window.innerHeight * 1.5) return;
 
-    var parent = heroFogCanvas.parentElement;
-    var pw = parent.offsetWidth;
-    var ph = parent.offsetHeight;
-
-    if (heroFogCanvas.width !== pw || heroFogCanvas.height !== ph) {
-      heroFogCanvas.width = pw;
-      heroFogCanvas.height = ph;
-    }
-
-    heroFogCtx.clearRect(0, 0, pw, ph);
+    heroFogCtx.clearRect(0, 0, heroW, heroH);
+    var pw = heroW;
+    var ph = heroH;
 
     var SCALE = ATMOSPHERE.FOG_SCALE;
     var fw = Math.ceil(pw / SCALE);
@@ -390,7 +396,8 @@ var ATMOSPHERE = {
     var pulseDensity = baseDensity * (0.7 + 0.3 * Math.sin(time * 0.3));
 
     for (var y = 0; y < fh; y++) {
-      var verticalGradient = smoothstep(0, fh * 0.6, y);
+      // Fog is present everywhere but denser toward the bottom (ground fog)
+      var verticalGradient = 0.3 + 0.7 * smoothstep(fh * 0.15, fh * 0.7, y);
       for (var x = 0; x < fw; x++) {
         var n = SimplexNoise.fbm(
           x * ns + time * driftSpeed,
@@ -456,6 +463,7 @@ var ATMOSPHERE = {
     canvas.width = W;
     canvas.height = H;
     generateStars();
+    resizeHeroFog();
   }
 
   function generateStars() {
