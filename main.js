@@ -585,6 +585,183 @@ var ATMOSPHERE = {
 })();
 
 /* ═══════════════════════════════════════
+   Condensation Effect on Glass Cards
+   ═══════════════════════════════════════ */
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if ("ontouchstart" in window) return; // skip on touch devices
+
+  var CONDENSATION = {
+    NOISE_SCALE: 0.012,       // size of moisture droplet clusters
+    BASE_ALPHA: 0.08,         // subtle base condensation opacity
+    WIPE_RADIUS: 60,          // radius of cursor clear zone
+    REFORM_SPEED: 0.0008,     // how fast condensation reforms (per ms)
+    TEXTURE_RESOLUTION: 4,    // render at 1/4 resolution for perf
+  };
+
+  var cards = [];
+
+  function initCondensation() {
+    var glassCards = document.querySelectorAll(".glass-card, .contact-wrapper, .gallery");
+    glassCards.forEach(function (card) {
+      // Ensure positioned parent for the canvas overlay
+      var style = window.getComputedStyle(card);
+      if (style.position === "static") card.style.position = "relative";
+
+      var canvas = document.createElement("canvas");
+      canvas.className = "condensation-canvas";
+      canvas.setAttribute("aria-hidden", "true");
+      card.appendChild(canvas);
+
+      var state = {
+        el: card,
+        canvas: canvas,
+        ctx: canvas.getContext("2d"),
+        w: 0, h: 0,
+        mouseX: -999, mouseY: -999,
+        wipeX: -999, wipeY: -999, // smoothed wipe position
+        wipeStrength: 0,          // 0 = fully fogged, 1 = fully clear
+        isHovered: false,
+        lastTime: 0,
+        noiseTexture: null,       // pre-computed noise texture imageData
+        needsResize: true,
+      };
+
+      card.addEventListener("mouseenter", function () { state.isHovered = true; });
+      card.addEventListener("mouseleave", function () { state.isHovered = false; });
+      card.addEventListener("mousemove", function (e) {
+        var rect = card.getBoundingClientRect();
+        state.mouseX = e.clientX - rect.left;
+        state.mouseY = e.clientY - rect.top;
+      });
+
+      cards.push(state);
+    });
+  }
+
+  function resizeCard(state) {
+    var rect = state.el.getBoundingClientRect();
+    var w = Math.round(rect.width);
+    var h = Math.round(rect.height);
+    if (w === state.w && h === state.h) return;
+    state.w = w;
+    state.h = h;
+    state.canvas.width = w;
+    state.canvas.height = h;
+    // Pre-compute static noise texture
+    state.noiseTexture = generateNoiseTexture(w, h);
+    state.needsResize = false;
+  }
+
+  function generateNoiseTexture(w, h) {
+    var scale = CONDENSATION.TEXTURE_RESOLUTION;
+    var sw = Math.ceil(w / scale);
+    var sh = Math.ceil(h / scale);
+    var offscreen = document.createElement("canvas");
+    offscreen.width = sw;
+    offscreen.height = sh;
+    var offCtx = offscreen.getContext("2d");
+    var imgData = offCtx.createImageData(sw, sh);
+    var data = imgData.data;
+    var ns = CONDENSATION.NOISE_SCALE;
+
+    // Use a different z-slice than fog so patterns don't correlate
+    var zOffset = 42.7;
+
+    for (var y = 0; y < sh; y++) {
+      for (var x = 0; x < sw; x++) {
+        // Layer multiple noise octaves for organic droplet pattern
+        var n = SimplexNoise.fbm(x * ns, y * ns, zOffset, 3, 0.6);
+        // Only keep peaks as "droplets" — clamp low values to zero
+        var droplet = clamp(n * 1.5, 0, 1);
+        // Apply a power curve for sharper droplet definition
+        droplet = droplet * droplet * droplet;
+
+        var idx = (y * sw + x) * 4;
+        data[idx]     = 200; // slight cool tint (not pure white)
+        data[idx + 1] = 210;
+        data[idx + 2] = 220;
+        data[idx + 3] = (droplet * CONDENSATION.BASE_ALPHA * 255) | 0;
+      }
+    }
+
+    offCtx.putImageData(imgData, 0, 0);
+    return offscreen;
+  }
+
+  function renderCondensation(state, now) {
+    if (!state.noiseTexture || state.w === 0) return;
+
+    var dt = state.lastTime > 0 ? now - state.lastTime : 16;
+    state.lastTime = now;
+
+    // Smooth the wipe position toward mouse
+    if (state.isHovered) {
+      state.wipeX = lerp(state.wipeX, state.mouseX, 0.12);
+      state.wipeY = lerp(state.wipeY, state.mouseY, 0.12);
+      state.wipeStrength = Math.min(1, state.wipeStrength + dt * 0.004);
+    } else {
+      // Reform: condensation slowly returns
+      state.wipeStrength = Math.max(0, state.wipeStrength - dt * CONDENSATION.REFORM_SPEED);
+    }
+
+    var ctx = state.ctx;
+    ctx.clearRect(0, 0, state.w, state.h);
+
+    // Draw the noise texture (scaled up from low res)
+    ctx.globalAlpha = 1;
+    ctx.drawImage(state.noiseTexture, 0, 0, state.w, state.h);
+
+    if (state.wipeStrength > 0.01) {
+      // Erase a soft circular area at the wipe position
+      ctx.globalCompositeOperation = "destination-out";
+      var r = CONDENSATION.WIPE_RADIUS * state.wipeStrength;
+      var grad = ctx.createRadialGradient(
+        state.wipeX, state.wipeY, 0,
+        state.wipeX, state.wipeY, r
+      );
+      grad.addColorStop(0, "rgba(0,0,0," + state.wipeStrength + ")");
+      grad.addColorStop(0.5, "rgba(0,0,0," + (state.wipeStrength * 0.6) + ")");
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(state.wipeX, state.wipeY, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+    }
+  }
+
+  // Animation loop for condensation (separate from atmosphere for independence)
+  var condensationRAF;
+  function condensationLoop(now) {
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].needsResize) resizeCard(cards[i]);
+      renderCondensation(cards[i], now);
+    }
+    condensationRAF = requestAnimationFrame(condensationLoop);
+  }
+
+  // Init after DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      initCondensation();
+      // Resize all cards initially
+      cards.forEach(function (s) { resizeCard(s); });
+      condensationRAF = requestAnimationFrame(condensationLoop);
+    });
+  } else {
+    initCondensation();
+    cards.forEach(function (s) { resizeCard(s); });
+    condensationRAF = requestAnimationFrame(condensationLoop);
+  }
+
+  // Handle resize
+  window.addEventListener("resize", function () {
+    cards.forEach(function (s) { s.needsResize = true; });
+  });
+})();
+
+/* ═══════════════════════════════════════
    Navigation + Scroll Animations
    ═══════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", function () {
