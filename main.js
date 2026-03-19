@@ -592,10 +592,10 @@ var ATMOSPHERE = {
   if ("ontouchstart" in window) return; // skip on touch devices
 
   var CONDENSATION = {
-    NOISE_SCALE: 0.012,       // size of moisture droplet clusters
-    BASE_ALPHA: 0.08,         // subtle base condensation opacity
-    WIPE_RADIUS: 60,          // radius of cursor clear zone
-    REFORM_SPEED: 0.0008,     // how fast condensation reforms (per ms)
+    NOISE_SCALE: 0.015,       // size of moisture droplet clusters
+    BASE_ALPHA: 0.35,         // condensation opacity (visible but not overpowering)
+    WIPE_RADIUS: 70,          // radius of cursor clear zone
+    REFORM_SPEED: 0.0006,     // how fast condensation reforms (per ms)
     TEXTURE_RESOLUTION: 4,    // render at 1/4 resolution for perf
   };
 
@@ -672,10 +672,9 @@ var ATMOSPHERE = {
       for (var x = 0; x < sw; x++) {
         // Layer multiple noise octaves for organic droplet pattern
         var n = SimplexNoise.fbm(x * ns, y * ns, zOffset, 3, 0.6);
-        // Only keep peaks as "droplets" — clamp low values to zero
-        var droplet = clamp(n * 1.5, 0, 1);
-        // Apply a power curve for sharper droplet definition
-        droplet = droplet * droplet * droplet;
+        // Map noise to organic moisture pattern — keep peaks as visible droplets
+        var droplet = clamp(n * 1.2 + 0.3, 0, 1);
+        droplet = droplet * droplet;
 
         var idx = (y * sw + x) * 4;
         data[idx]     = 200; // slight cool tint (not pure white)
@@ -699,7 +698,7 @@ var ATMOSPHERE = {
     if (state.isHovered) {
       state.wipeX = lerp(state.wipeX, state.mouseX, 0.12);
       state.wipeY = lerp(state.wipeY, state.mouseY, 0.12);
-      state.wipeStrength = Math.min(1, state.wipeStrength + dt * 0.004);
+      state.wipeStrength = Math.min(1, state.wipeStrength + dt * 0.006);
     } else {
       // Reform: condensation slowly returns
       state.wipeStrength = Math.max(0, state.wipeStrength - dt * CONDENSATION.REFORM_SPEED);
