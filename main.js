@@ -641,13 +641,15 @@ var ATMOSPHERE = {
           refractBase: 0.3,
           refractScale: 0.5,
         });
+        var inst = { el: el, canvas: canvas, fx: fx, ready: false };
         fx.start().then(function() {
-          // started successfully
+          inst.ready = true;
         }).catch(function(err) {
           console.warn("RaindropFX start failed:", err);
           canvas.remove();
+          inst.ready = false;
         });
-        instances.push({ el: el, canvas: canvas, fx: fx });
+        instances.push(inst);
       } catch (e) {
         console.warn("RaindropFX init failed:", e);
         canvas.remove();
@@ -657,11 +659,16 @@ var ATMOSPHERE = {
 
   function handleResize() {
     instances.forEach(function (inst) {
-      var rect = inst.el.getBoundingClientRect();
-      var w = Math.round(rect.width);
-      var h = Math.round(rect.height);
-      if (w > 0 && h > 0) {
-        inst.fx.resize(w, h);
+      if (!inst.ready) return;
+      try {
+        var rect = inst.el.getBoundingClientRect();
+        var w = Math.round(rect.width);
+        var h = Math.round(rect.height);
+        if (w > 0 && h > 0) {
+          inst.fx.resize(w, h);
+        }
+      } catch (e) {
+        // Ignore resize errors during initialization
       }
     });
   }
