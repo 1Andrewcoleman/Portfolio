@@ -585,73 +585,17 @@ var ATMOSPHERE = {
 })();
 
 /* ═══════════════════════════════════════
-   Raindrop-on-Glass Effect for Glass Cards
+   Raindrop-on-Glass Effect (raindrop-fx)
+   WebGL2-based realistic rain on glass cards
    ═══════════════════════════════════════ */
 (function () {
+  if (typeof RaindropFX === "undefined") return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   if ("ontouchstart" in window) return;
 
-  var RAIN = {
-    STATIC_DROPS_MIN: 45,
-    STATIC_DROPS_MAX: 75,
-    STATIC_RADIUS_MIN: 1.5,
-    STATIC_RADIUS_MAX: 4,
-    STATIC_ALPHA_MIN: 0.25,
-    STATIC_ALPHA_MAX: 0.55,
+  var instances = [];
 
-    RUNNER_SPAWN_MIN: 3500,     // ms between runner spawns
-    RUNNER_SPAWN_MAX: 6500,
-    RUNNER_RADIUS_MIN: 4,
-    RUNNER_RADIUS_MAX: 7,
-    RUNNER_GRAVITY: 0.012,      // acceleration per frame
-    RUNNER_MAX_SPEED: 2.5,
-    RUNNER_WOBBLE: 0.35,
-    RUNNER_ABSORB_RANGE: 8,     // px — how close to absorb a static drop
-    RUNNER_GROW_RATE: 0.15,     // radius gained per absorbed drop
-
-    TRAIL_DROP_SPACING: 6,      // px between trail drops
-    TRAIL_RADIUS_MIN: 0.8,
-    TRAIL_RADIUS_MAX: 1.8,
-    TRAIL_FADE_TIME: 4000,      // ms for trail to fade out
-  };
-
-  /* ── Drop drawing ── */
-  function drawDrop(ctx, x, y, r, alpha, elongation) {
-    elongation = elongation || 1;
-    ctx.save();
-    ctx.translate(x, y);
-    if (elongation !== 1) ctx.scale(1, elongation);
-
-    // Outer glow — subtle water edge
-    var grad = ctx.createRadialGradient(0, 0, r * 0.1, 0, 0, r);
-    grad.addColorStop(0, "rgba(255,255,255," + (alpha * 0.7) + ")");
-    grad.addColorStop(0.35, "rgba(200,220,235," + (alpha * 0.35) + ")");
-    grad.addColorStop(0.7, "rgba(180,210,230," + (alpha * 0.15) + ")");
-    grad.addColorStop(1, "rgba(180,210,230,0)");
-    ctx.beginPath();
-    ctx.arc(0, 0, r, 0, Math.PI * 2);
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // Specular highlight — top-left bright spot
-    var hlR = r * 0.35;
-    var hlX = -r * 0.25;
-    var hlY = -r * 0.25;
-    var hlGrad = ctx.createRadialGradient(hlX, hlY, 0, hlX, hlY, hlR);
-    hlGrad.addColorStop(0, "rgba(255,255,255," + (alpha * 0.9) + ")");
-    hlGrad.addColorStop(1, "rgba(255,255,255,0)");
-    ctx.beginPath();
-    ctx.arc(hlX, hlY, hlR, 0, Math.PI * 2);
-    ctx.fillStyle = hlGrad;
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  /* ── Card state manager ── */
-  var cardStates = [];
-
-  function initCards() {
+  function initRaindrops() {
     var glassCards = document.querySelectorAll(".glass-card, .contact-wrapper, .gallery");
     glassCards.forEach(function (el) {
       var style = window.getComputedStyle(el);
@@ -662,188 +606,60 @@ var ATMOSPHERE = {
       canvas.setAttribute("aria-hidden", "true");
       el.appendChild(canvas);
 
-      var state = {
-        el: el,
-        canvas: canvas,
-        ctx: canvas.getContext("2d"),
-        w: 0, h: 0,
-        staticDrops: [],
-        runners: [],
-        trailDrops: [],
-        nextRunnerAt: performance.now() + randomRange(RAIN.RUNNER_SPAWN_MIN, RAIN.RUNNER_SPAWN_MAX),
-        isVisible: false,
-        needsResize: true,
-      };
+      var rect = el.getBoundingClientRect();
+      canvas.width = Math.round(rect.width);
+      canvas.height = Math.round(rect.height);
 
-      cardStates.push(state);
-    });
-  }
-
-  function resizeCardState(state) {
-    var rect = state.el.getBoundingClientRect();
-    var w = Math.round(rect.width);
-    var h = Math.round(rect.height);
-    if (w === state.w && h === state.h && !state.needsResize) return;
-    state.w = w;
-    state.h = h;
-    state.canvas.width = w;
-    state.canvas.height = h;
-    // Re-populate static drops for new dimensions
-    populateStaticDrops(state);
-    state.needsResize = false;
-  }
-
-  function populateStaticDrops(state) {
-    var count = randomInt(RAIN.STATIC_DROPS_MIN, RAIN.STATIC_DROPS_MAX);
-    state.staticDrops = [];
-    for (var i = 0; i < count; i++) {
-      state.staticDrops.push({
-        x: randomRange(5, state.w - 5),
-        y: randomRange(5, state.h - 5),
-        r: randomRange(RAIN.STATIC_RADIUS_MIN, RAIN.STATIC_RADIUS_MAX),
-        alpha: randomRange(RAIN.STATIC_ALPHA_MIN, RAIN.STATIC_ALPHA_MAX),
-      });
-    }
-  }
-
-  function spawnRunner(state) {
-    state.runners.push({
-      x: randomRange(15, state.w - 15),
-      y: randomRange(-5, 10),
-      r: randomRange(RAIN.RUNNER_RADIUS_MIN, RAIN.RUNNER_RADIUS_MAX),
-      vy: 0.3 + Math.random() * 0.3,
-      alpha: 0.55 + Math.random() * 0.2,
-      lastTrailY: -999,
-    });
-  }
-
-  function updateCard(state, now) {
-    if (!state.isVisible || state.w === 0) return;
-
-    var ctx = state.ctx;
-    ctx.clearRect(0, 0, state.w, state.h);
-
-    // Draw static drops
-    for (var i = 0; i < state.staticDrops.length; i++) {
-      var sd = state.staticDrops[i];
-      drawDrop(ctx, sd.x, sd.y, sd.r, sd.alpha, 1);
-    }
-
-    // Draw trail drops (fading)
-    for (var t = state.trailDrops.length - 1; t >= 0; t--) {
-      var td = state.trailDrops[t];
-      var age = now - td.born;
-      if (age > RAIN.TRAIL_FADE_TIME) {
-        state.trailDrops.splice(t, 1);
-        continue;
-      }
-      var fadeAlpha = td.alpha * (1 - age / RAIN.TRAIL_FADE_TIME);
-      drawDrop(ctx, td.x, td.y, td.r, fadeAlpha, 1);
-    }
-
-    // Spawn new runners
-    if (now >= state.nextRunnerAt) {
-      spawnRunner(state);
-      state.nextRunnerAt = now + randomRange(RAIN.RUNNER_SPAWN_MIN, RAIN.RUNNER_SPAWN_MAX);
-    }
-
-    // Update & draw runner drops
-    for (var j = state.runners.length - 1; j >= 0; j--) {
-      var rd = state.runners[j];
-
-      // Gravity acceleration
-      rd.vy = Math.min(rd.vy + RAIN.RUNNER_GRAVITY, RAIN.RUNNER_MAX_SPEED);
-      rd.y += rd.vy;
-      // Horizontal wobble
-      rd.x += (Math.random() - 0.5) * RAIN.RUNNER_WOBBLE;
-
-      // Leave trail drops
-      if (rd.y - rd.lastTrailY > RAIN.TRAIL_DROP_SPACING) {
-        state.trailDrops.push({
-          x: rd.x + (Math.random() - 0.5) * 2,
-          y: rd.y - rd.r,
-          r: randomRange(RAIN.TRAIL_RADIUS_MIN, RAIN.TRAIL_RADIUS_MAX),
-          alpha: rd.alpha * 0.5,
-          born: now,
+      try {
+        var fx = new RaindropFX({
+          canvas: canvas,
+          background: "data:image/svg+xml," + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="' + canvas.width + '" height="' + canvas.height + '">' +
+            '<rect width="100%" height="100%" fill="rgb(18,22,30)" />' +
+            '</svg>'
+          ),
+          mist: true,
+          mistTime: 3,
+          mistBlurStep: 3,
+          spawnInterval: [0.1, 0.3],
+          spawnSize: [20, 80],
+          spawnLimit: 500,
+          slipRate: 0.7,
+          motionInterval: [0.7, 2],
+          motionRate: 0.6,
+          dropletsRate: 30,
+          dropletsSize: [2, 4],
+          dropletsCleaningTimer: 0,
+          smooth: true,
+          fps: 24,
         });
-        rd.lastTrailY = rd.y;
-      }
-
-      // Check absorption of static drops
-      for (var k = state.staticDrops.length - 1; k >= 0; k--) {
-        var sd2 = state.staticDrops[k];
-        var dx = rd.x - sd2.x;
-        var dy = rd.y - sd2.y;
-        if (dx * dx + dy * dy < RAIN.RUNNER_ABSORB_RANGE * RAIN.RUNNER_ABSORB_RANGE) {
-          // Absorb: runner grows, static drop removed
-          rd.r = Math.min(rd.r + RAIN.RUNNER_GROW_RATE, 12);
-          rd.vy *= 1.02; // slightly accelerate from mass gain
-          state.staticDrops.splice(k, 1);
-        }
-      }
-
-      // Draw runner (slightly elongated vertically based on speed)
-      var elongation = 1 + rd.vy * 0.12;
-      drawDrop(ctx, rd.x, rd.y, rd.r, rd.alpha, elongation);
-
-      // Remove if off-screen
-      if (rd.y > state.h + 20) {
-        state.runners.splice(j, 1);
-      }
-    }
-
-    // Replenish static drops slowly (replace absorbed ones)
-    if (state.staticDrops.length < RAIN.STATIC_DROPS_MIN) {
-      state.staticDrops.push({
-        x: randomRange(5, state.w - 5),
-        y: randomRange(5, state.h - 5),
-        r: randomRange(RAIN.STATIC_RADIUS_MIN, RAIN.STATIC_RADIUS_MAX),
-        alpha: randomRange(RAIN.STATIC_ALPHA_MIN, RAIN.STATIC_ALPHA_MAX) * 0.5, // fade in subtle
-      });
-    }
-  }
-
-  /* ── Visibility tracking ── */
-  var visObserver = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      // Find the card state for this element
-      for (var i = 0; i < cardStates.length; i++) {
-        if (cardStates[i].el === entry.target) {
-          cardStates[i].isVisible = entry.isIntersecting;
-          break;
-        }
+        fx.start();
+        instances.push({ el: el, canvas: canvas, fx: fx });
+      } catch (e) {
+        // WebGL2 not available — silently skip
+        canvas.remove();
       }
     });
-  }, { threshold: 0.05 });
-
-  /* ── Animation loop ── */
-  function raindropLoop(now) {
-    for (var i = 0; i < cardStates.length; i++) {
-      if (cardStates[i].needsResize) resizeCardState(cardStates[i]);
-      updateCard(cardStates[i], now);
-    }
-    requestAnimationFrame(raindropLoop);
   }
 
-  /* ── Init ── */
-  function init() {
-    initCards();
-    cardStates.forEach(function (s) {
-      resizeCardState(s);
-      visObserver.observe(s.el);
+  function handleResize() {
+    instances.forEach(function (inst) {
+      var rect = inst.el.getBoundingClientRect();
+      var w = Math.round(rect.width);
+      var h = Math.round(rect.height);
+      if (w > 0 && h > 0) {
+        inst.fx.resize(w, h);
+      }
     });
-    requestAnimationFrame(raindropLoop);
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", initRaindrops);
   } else {
-    init();
+    initRaindrops();
   }
 
-  window.addEventListener("resize", function () {
-    cardStates.forEach(function (s) { s.needsResize = true; });
-  });
+  window.addEventListener("resize", handleResize);
 })();
 
 /* ═══════════════════════════════════════
