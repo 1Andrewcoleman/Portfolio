@@ -585,179 +585,81 @@ var ATMOSPHERE = {
 })();
 
 /* ═══════════════════════════════════════
-   Condensation Effect on Glass Cards
+   Raindrop-on-Glass Effect (raindrop-fx)
+   WebGL2-based realistic rain on glass cards
    ═══════════════════════════════════════ */
 (function () {
+  if (typeof RaindropFX === "undefined") return;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  if ("ontouchstart" in window) return; // skip on touch devices
+  if ("ontouchstart" in window) return;
 
-  var CONDENSATION = {
-    NOISE_SCALE: 0.015,       // size of moisture droplet clusters
-    BASE_ALPHA: 0.35,         // condensation opacity (visible but not overpowering)
-    WIPE_RADIUS: 70,          // radius of cursor clear zone
-    REFORM_SPEED: 0.0006,     // how fast condensation reforms (per ms)
-    TEXTURE_RESOLUTION: 4,    // render at 1/4 resolution for perf
-  };
+  var instances = [];
 
-  var cards = [];
-
-  function initCondensation() {
+  function initRaindrops() {
     var glassCards = document.querySelectorAll(".glass-card, .contact-wrapper, .gallery");
-    glassCards.forEach(function (card) {
-      // Ensure positioned parent for the canvas overlay
-      var style = window.getComputedStyle(card);
-      if (style.position === "static") card.style.position = "relative";
+    glassCards.forEach(function (el) {
+      var style = window.getComputedStyle(el);
+      if (style.position === "static") el.style.position = "relative";
 
       var canvas = document.createElement("canvas");
-      canvas.className = "condensation-canvas";
+      canvas.className = "raindrop-canvas";
       canvas.setAttribute("aria-hidden", "true");
-      card.appendChild(canvas);
+      el.appendChild(canvas);
 
-      var state = {
-        el: card,
-        canvas: canvas,
-        ctx: canvas.getContext("2d"),
-        w: 0, h: 0,
-        mouseX: -999, mouseY: -999,
-        wipeX: -999, wipeY: -999, // smoothed wipe position
-        wipeStrength: 0,          // 0 = fully fogged, 1 = fully clear
-        isHovered: false,
-        lastTime: 0,
-        noiseTexture: null,       // pre-computed noise texture imageData
-        needsResize: true,
-      };
+      var rect = el.getBoundingClientRect();
+      canvas.width = Math.round(rect.width);
+      canvas.height = Math.round(rect.height);
 
-      card.addEventListener("mouseenter", function () { state.isHovered = true; });
-      card.addEventListener("mouseleave", function () { state.isHovered = false; });
-      card.addEventListener("mousemove", function (e) {
-        var rect = card.getBoundingClientRect();
-        state.mouseX = e.clientX - rect.left;
-        state.mouseY = e.clientY - rect.top;
-      });
-
-      cards.push(state);
-    });
-  }
-
-  function resizeCard(state) {
-    var rect = state.el.getBoundingClientRect();
-    var w = Math.round(rect.width);
-    var h = Math.round(rect.height);
-    if (w === state.w && h === state.h) return;
-    state.w = w;
-    state.h = h;
-    state.canvas.width = w;
-    state.canvas.height = h;
-    // Pre-compute static noise texture
-    state.noiseTexture = generateNoiseTexture(w, h);
-    state.needsResize = false;
-  }
-
-  function generateNoiseTexture(w, h) {
-    var scale = CONDENSATION.TEXTURE_RESOLUTION;
-    var sw = Math.ceil(w / scale);
-    var sh = Math.ceil(h / scale);
-    var offscreen = document.createElement("canvas");
-    offscreen.width = sw;
-    offscreen.height = sh;
-    var offCtx = offscreen.getContext("2d");
-    var imgData = offCtx.createImageData(sw, sh);
-    var data = imgData.data;
-    var ns = CONDENSATION.NOISE_SCALE;
-
-    // Use a different z-slice than fog so patterns don't correlate
-    var zOffset = 42.7;
-
-    for (var y = 0; y < sh; y++) {
-      for (var x = 0; x < sw; x++) {
-        // Layer multiple noise octaves for organic droplet pattern
-        var n = SimplexNoise.fbm(x * ns, y * ns, zOffset, 3, 0.6);
-        // Map noise to organic moisture pattern — keep peaks as visible droplets
-        var droplet = clamp(n * 1.2 + 0.3, 0, 1);
-        droplet = droplet * droplet;
-
-        var idx = (y * sw + x) * 4;
-        data[idx]     = 200; // slight cool tint (not pure white)
-        data[idx + 1] = 210;
-        data[idx + 2] = 220;
-        data[idx + 3] = (droplet * CONDENSATION.BASE_ALPHA * 255) | 0;
+      try {
+        var fx = new RaindropFX({
+          canvas: canvas,
+          background: "data:image/svg+xml," + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="' + canvas.width + '" height="' + canvas.height + '">' +
+            '<rect width="100%" height="100%" fill="rgb(18,22,30)" />' +
+            '</svg>'
+          ),
+          mist: true,
+          mistTime: 3,
+          mistBlurStep: 3,
+          spawnInterval: [0.1, 0.3],
+          spawnSize: [20, 80],
+          spawnLimit: 500,
+          slipRate: 0.7,
+          motionInterval: [0.7, 2],
+          motionRate: 0.6,
+          dropletsRate: 30,
+          dropletsSize: [2, 4],
+          dropletsCleaningTimer: 0,
+          smooth: true,
+          fps: 24,
+        });
+        fx.start();
+        instances.push({ el: el, canvas: canvas, fx: fx });
+      } catch (e) {
+        // WebGL2 not available — silently skip
+        canvas.remove();
       }
-    }
-
-    offCtx.putImageData(imgData, 0, 0);
-    return offscreen;
-  }
-
-  function renderCondensation(state, now) {
-    if (!state.noiseTexture || state.w === 0) return;
-
-    var dt = state.lastTime > 0 ? now - state.lastTime : 16;
-    state.lastTime = now;
-
-    // Smooth the wipe position toward mouse
-    if (state.isHovered) {
-      state.wipeX = lerp(state.wipeX, state.mouseX, 0.12);
-      state.wipeY = lerp(state.wipeY, state.mouseY, 0.12);
-      state.wipeStrength = Math.min(1, state.wipeStrength + dt * 0.006);
-    } else {
-      // Reform: condensation slowly returns
-      state.wipeStrength = Math.max(0, state.wipeStrength - dt * CONDENSATION.REFORM_SPEED);
-    }
-
-    var ctx = state.ctx;
-    ctx.clearRect(0, 0, state.w, state.h);
-
-    // Draw the noise texture (scaled up from low res)
-    ctx.globalAlpha = 1;
-    ctx.drawImage(state.noiseTexture, 0, 0, state.w, state.h);
-
-    if (state.wipeStrength > 0.01) {
-      // Erase a soft circular area at the wipe position
-      ctx.globalCompositeOperation = "destination-out";
-      var r = CONDENSATION.WIPE_RADIUS * state.wipeStrength;
-      var grad = ctx.createRadialGradient(
-        state.wipeX, state.wipeY, 0,
-        state.wipeX, state.wipeY, r
-      );
-      grad.addColorStop(0, "rgba(0,0,0," + state.wipeStrength + ")");
-      grad.addColorStop(0.5, "rgba(0,0,0," + (state.wipeStrength * 0.6) + ")");
-      grad.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(state.wipeX, state.wipeY, r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalCompositeOperation = "source-over";
-    }
-  }
-
-  // Animation loop for condensation (separate from atmosphere for independence)
-  var condensationRAF;
-  function condensationLoop(now) {
-    for (var i = 0; i < cards.length; i++) {
-      if (cards[i].needsResize) resizeCard(cards[i]);
-      renderCondensation(cards[i], now);
-    }
-    condensationRAF = requestAnimationFrame(condensationLoop);
-  }
-
-  // Init after DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      initCondensation();
-      // Resize all cards initially
-      cards.forEach(function (s) { resizeCard(s); });
-      condensationRAF = requestAnimationFrame(condensationLoop);
     });
-  } else {
-    initCondensation();
-    cards.forEach(function (s) { resizeCard(s); });
-    condensationRAF = requestAnimationFrame(condensationLoop);
   }
 
-  // Handle resize
-  window.addEventListener("resize", function () {
-    cards.forEach(function (s) { s.needsResize = true; });
-  });
+  function handleResize() {
+    instances.forEach(function (inst) {
+      var rect = inst.el.getBoundingClientRect();
+      var w = Math.round(rect.width);
+      var h = Math.round(rect.height);
+      if (w > 0 && h > 0) {
+        inst.fx.resize(w, h);
+      }
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initRaindrops);
+  } else {
+    initRaindrops();
+  }
+
+  window.addEventListener("resize", handleResize);
 })();
 
 /* ═══════════════════════════════════════
