@@ -145,22 +145,22 @@ var ATMOSPHERE = {
   STAR_DENSITY: 1000,
   STAR_MAX_RADIUS: 1.2,
   STAR_HUES: [0, 60, 210, 240],
-  TWINKLE_SPEED_MIN: 0.3,
-  TWINKLE_SPEED_MAX: 1.5,
-  DRIFT_SPEED: 0.015,
+  TWINKLE_SPEED_MIN: 0.25,
+  TWINKLE_SPEED_MAX: 1.27,
+  DRIFT_SPEED: 0.013,
   PARALLAX_SMOOTHING: 0.08,
 
-  SHOOTING_STAR_MIN_INTERVAL: 8000,
-  SHOOTING_STAR_MAX_INTERVAL: 15000,
+  SHOOTING_STAR_MIN_INTERVAL: 3000,
+  SHOOTING_STAR_MAX_INTERVAL: 8000,
   SHOOTING_STAR_SPEED: 10,
   SHOOTING_STAR_TRAIL_LENGTH: 25,
 
-  MIST_SPAWN_RATE: 3,
-  MIST_MAX_PARTICLES: 60,
-  MIST_LIFETIME_MIN: 500,
-  MIST_LIFETIME_MAX: 1000,
-  MIST_OPACITY: 0.35,
-  MIST_RADIUS_MAX: 5,
+  MIST_SPAWN_RATE: 2,
+  MIST_MAX_PARTICLES: 40,
+  MIST_LIFETIME_MIN: 600,
+  MIST_LIFETIME_MAX: 1200,
+  MIST_OPACITY: 0.30,
+  MIST_RADIUS_MAX: 10,
 
   IDLE_THRESHOLD: 10000,
 
@@ -263,9 +263,9 @@ var ATMOSPHERE = {
 
   /* ── Mist Particle ── */
   function MistParticle(x, y) {
-    this.x = x + (Math.random() - 0.5) * 20;
-    this.y = y + (Math.random() - 0.5) * 20;
-    this.radius = 1 + Math.random() * ATMOSPHERE.MIST_RADIUS_MAX;
+    this.x = x + (Math.random() - 0.5) * 30;
+    this.y = y + (Math.random() - 0.5) * 30;
+    this.radius = 3 + Math.random() * ATMOSPHERE.MIST_RADIUS_MAX;
     this.maxOpacity = ATMOSPHERE.MIST_OPACITY * (0.5 + Math.random() * 0.5);
     this.life = randomRange(ATMOSPHERE.MIST_LIFETIME_MIN, ATMOSPHERE.MIST_LIFETIME_MAX);
     this.born = -1;
@@ -285,9 +285,14 @@ var ATMOSPHERE = {
 
   MistParticle.prototype.draw = function () {
     if (this.opacity <= 0) return;
+    // Soft radial gradient for a misty look instead of hard circles
+    var grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+    grad.addColorStop(0, "rgba(255,255,255," + (this.opacity * 0.8) + ")");
+    grad.addColorStop(0.4, "rgba(255,255,255," + (this.opacity * 0.3) + ")");
+    grad.addColorStop(1, "rgba(255,255,255,0)");
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255,255,255," + this.opacity + ")";
+    ctx.fillStyle = grad;
     ctx.fill();
   };
 
@@ -425,10 +430,10 @@ var ATMOSPHERE = {
 
   /* ── Scroll-driven atmosphere parameters ── */
   var atmosphereKeyframes = [
-    { at: 0.0,  starBright: 1.0, fogDensity: 0.40, bgTop: [12,17,22], bgBot: [22,25,39] },
-    { at: 0.33, starBright: 0.7, fogDensity: 0.25, bgTop: [17,24,39], bgBot: [26,31,46] },
-    { at: 0.66, starBright: 0.5, fogDensity: 0.45, bgTop: [15,21,32], bgBot: [21,28,42] },
-    { at: 1.0,  starBright: 0.8, fogDensity: 0.30, bgTop: [17,21,32], bgBot: [26,28,40] },
+    { at: 0.0,  starBright: 1.0, fogDensity: 0.32, bgTop: [12,17,22], bgBot: [22,25,39] },
+    { at: 0.33, starBright: 0.7, fogDensity: 0.20, bgTop: [17,24,39], bgBot: [26,31,46] },
+    { at: 0.66, starBright: 0.5, fogDensity: 0.36, bgTop: [15,21,32], bgBot: [21,28,42] },
+    { at: 1.0,  starBright: 0.8, fogDensity: 0.24, bgTop: [17,21,32], bgBot: [26,28,40] },
   ];
 
   function getAtmosphereParams(progress) {
@@ -577,6 +582,182 @@ var ATMOSPHERE = {
   resize();
   updateScrollProgress();
   requestAnimationFrame(render);
+})();
+
+/* ═══════════════════════════════════════
+   Condensation Effect on Glass Cards
+   ═══════════════════════════════════════ */
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if ("ontouchstart" in window) return; // skip on touch devices
+
+  var CONDENSATION = {
+    NOISE_SCALE: 0.015,       // size of moisture droplet clusters
+    BASE_ALPHA: 0.35,         // condensation opacity (visible but not overpowering)
+    WIPE_RADIUS: 70,          // radius of cursor clear zone
+    REFORM_SPEED: 0.0006,     // how fast condensation reforms (per ms)
+    TEXTURE_RESOLUTION: 4,    // render at 1/4 resolution for perf
+  };
+
+  var cards = [];
+
+  function initCondensation() {
+    var glassCards = document.querySelectorAll(".glass-card, .contact-wrapper, .gallery");
+    glassCards.forEach(function (card) {
+      // Ensure positioned parent for the canvas overlay
+      var style = window.getComputedStyle(card);
+      if (style.position === "static") card.style.position = "relative";
+
+      var canvas = document.createElement("canvas");
+      canvas.className = "condensation-canvas";
+      canvas.setAttribute("aria-hidden", "true");
+      card.appendChild(canvas);
+
+      var state = {
+        el: card,
+        canvas: canvas,
+        ctx: canvas.getContext("2d"),
+        w: 0, h: 0,
+        mouseX: -999, mouseY: -999,
+        wipeX: -999, wipeY: -999, // smoothed wipe position
+        wipeStrength: 0,          // 0 = fully fogged, 1 = fully clear
+        isHovered: false,
+        lastTime: 0,
+        noiseTexture: null,       // pre-computed noise texture imageData
+        needsResize: true,
+      };
+
+      card.addEventListener("mouseenter", function () { state.isHovered = true; });
+      card.addEventListener("mouseleave", function () { state.isHovered = false; });
+      card.addEventListener("mousemove", function (e) {
+        var rect = card.getBoundingClientRect();
+        state.mouseX = e.clientX - rect.left;
+        state.mouseY = e.clientY - rect.top;
+      });
+
+      cards.push(state);
+    });
+  }
+
+  function resizeCard(state) {
+    var rect = state.el.getBoundingClientRect();
+    var w = Math.round(rect.width);
+    var h = Math.round(rect.height);
+    if (w === state.w && h === state.h) return;
+    state.w = w;
+    state.h = h;
+    state.canvas.width = w;
+    state.canvas.height = h;
+    // Pre-compute static noise texture
+    state.noiseTexture = generateNoiseTexture(w, h);
+    state.needsResize = false;
+  }
+
+  function generateNoiseTexture(w, h) {
+    var scale = CONDENSATION.TEXTURE_RESOLUTION;
+    var sw = Math.ceil(w / scale);
+    var sh = Math.ceil(h / scale);
+    var offscreen = document.createElement("canvas");
+    offscreen.width = sw;
+    offscreen.height = sh;
+    var offCtx = offscreen.getContext("2d");
+    var imgData = offCtx.createImageData(sw, sh);
+    var data = imgData.data;
+    var ns = CONDENSATION.NOISE_SCALE;
+
+    // Use a different z-slice than fog so patterns don't correlate
+    var zOffset = 42.7;
+
+    for (var y = 0; y < sh; y++) {
+      for (var x = 0; x < sw; x++) {
+        // Layer multiple noise octaves for organic droplet pattern
+        var n = SimplexNoise.fbm(x * ns, y * ns, zOffset, 3, 0.6);
+        // Map noise to organic moisture pattern — keep peaks as visible droplets
+        var droplet = clamp(n * 1.2 + 0.3, 0, 1);
+        droplet = droplet * droplet;
+
+        var idx = (y * sw + x) * 4;
+        data[idx]     = 200; // slight cool tint (not pure white)
+        data[idx + 1] = 210;
+        data[idx + 2] = 220;
+        data[idx + 3] = (droplet * CONDENSATION.BASE_ALPHA * 255) | 0;
+      }
+    }
+
+    offCtx.putImageData(imgData, 0, 0);
+    return offscreen;
+  }
+
+  function renderCondensation(state, now) {
+    if (!state.noiseTexture || state.w === 0) return;
+
+    var dt = state.lastTime > 0 ? now - state.lastTime : 16;
+    state.lastTime = now;
+
+    // Smooth the wipe position toward mouse
+    if (state.isHovered) {
+      state.wipeX = lerp(state.wipeX, state.mouseX, 0.12);
+      state.wipeY = lerp(state.wipeY, state.mouseY, 0.12);
+      state.wipeStrength = Math.min(1, state.wipeStrength + dt * 0.006);
+    } else {
+      // Reform: condensation slowly returns
+      state.wipeStrength = Math.max(0, state.wipeStrength - dt * CONDENSATION.REFORM_SPEED);
+    }
+
+    var ctx = state.ctx;
+    ctx.clearRect(0, 0, state.w, state.h);
+
+    // Draw the noise texture (scaled up from low res)
+    ctx.globalAlpha = 1;
+    ctx.drawImage(state.noiseTexture, 0, 0, state.w, state.h);
+
+    if (state.wipeStrength > 0.01) {
+      // Erase a soft circular area at the wipe position
+      ctx.globalCompositeOperation = "destination-out";
+      var r = CONDENSATION.WIPE_RADIUS * state.wipeStrength;
+      var grad = ctx.createRadialGradient(
+        state.wipeX, state.wipeY, 0,
+        state.wipeX, state.wipeY, r
+      );
+      grad.addColorStop(0, "rgba(0,0,0," + state.wipeStrength + ")");
+      grad.addColorStop(0.5, "rgba(0,0,0," + (state.wipeStrength * 0.6) + ")");
+      grad.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(state.wipeX, state.wipeY, r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+    }
+  }
+
+  // Animation loop for condensation (separate from atmosphere for independence)
+  var condensationRAF;
+  function condensationLoop(now) {
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i].needsResize) resizeCard(cards[i]);
+      renderCondensation(cards[i], now);
+    }
+    condensationRAF = requestAnimationFrame(condensationLoop);
+  }
+
+  // Init after DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function () {
+      initCondensation();
+      // Resize all cards initially
+      cards.forEach(function (s) { resizeCard(s); });
+      condensationRAF = requestAnimationFrame(condensationLoop);
+    });
+  } else {
+    initCondensation();
+    cards.forEach(function (s) { resizeCard(s); });
+    condensationRAF = requestAnimationFrame(condensationLoop);
+  }
+
+  // Handle resize
+  window.addEventListener("resize", function () {
+    cards.forEach(function (s) { s.needsResize = true; });
+  });
 })();
 
 /* ═══════════════════════════════════════

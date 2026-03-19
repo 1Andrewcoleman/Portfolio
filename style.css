@@ -119,6 +119,17 @@ body {
   pointer-events: none;
 }
 
+/* ── Condensation overlay on glass cards ── */
+.condensation-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
 /* ── Section base z-index ── */
 .landing-page,
 #about-me,
