@@ -1,3 +1,36 @@
+/* ── Self-hosted Lato font ── */
+@font-face {
+  font-family: "Lato";
+  src: url("assets/fonts/lato-300.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("assets/fonts/lato-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("assets/fonts/lato-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Lato";
+  src: url("assets/fonts/lato-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --accent: #46b96c;
   --accent-hover: #3aa55d;
@@ -35,6 +68,21 @@ body {
   font-family: var(--font-sans);
 }
 
+/* ── Inline SVG icon base ── */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+  overflow: visible;
+}
+
+.icon-2x {
+  width: 2em;
+  height: 2em;
+}
+
 /* ── Skip to content (accessibility) ── */
 .skip-link {
   position: absolute;
@@ -55,13 +103,20 @@ body {
   top: 16px;
 }
 
-/* ── Starfield Canvas ── */
-canvas {
+/* ── Atmospheric Canvas ── */
+#atmosphere {
   background: radial-gradient(ellipse at bottom, #0c1116 0%, #161927 100%);
   position: fixed;
   left: 0;
   top: 0;
   z-index: -1;
+}
+
+#hero-fog {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* ── Section base z-index ── */
@@ -334,9 +389,9 @@ textarea::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.list-item i {
+.list-item .icon {
   width: 24px;
-  text-align: center;
+  height: 24px;
   flex-shrink: 0;
 }
 
@@ -739,73 +794,6 @@ section.in-view {
 .vertical-navbar a.active::before {
   transform: scale(0.85);
   opacity: 0.6;
-}
-
-/* ── Fog Animation ── */
-#foglayer_01,
-#foglayer_02,
-#foglayer_03 {
-  height: 100%;
-  position: absolute;
-  width: 200%;
-}
-
-#foglayer_01 .image01,
-#foglayer_01 .image02,
-#foglayer_02 .image01,
-#foglayer_02 .image02,
-#foglayer_03 .image01,
-#foglayer_03 .image02 {
-  float: left;
-  height: 100%;
-  width: 50%;
-}
-
-#foglayer_01 {
-  animation: foglayer_01_opacity 10s linear infinite,
-    foglayer_moveme 15s linear infinite;
-}
-
-#foglayer_02,
-#foglayer_03 {
-  animation: foglayer_02_opacity 21s linear infinite,
-    foglayer_moveme 13s linear infinite;
-}
-
-#foglayer_01 .image01,
-#foglayer_01 .image02 {
-  background: url("https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog1.png")
-    center center/cover no-repeat transparent;
-}
-
-#foglayer_02 .image01,
-#foglayer_02 .image02,
-#foglayer_03 .image01,
-#foglayer_03 .image02 {
-  background: url("https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog2.png")
-    center center/cover no-repeat transparent;
-}
-
-@keyframes foglayer_01_opacity {
-  0% { opacity: 0.6; }
-  22% { opacity: 0.5; }
-  40% { opacity: 0.98; }
-  58% { opacity: 0.5; }
-  80% { opacity: 0.16; }
-  100% { opacity: 0.6; }
-}
-
-@keyframes foglayer_02_opacity {
-  0% { opacity: 0.7; }
-  25% { opacity: 0.3; }
-  50% { opacity: 0.3; }
-  80% { opacity: 0.3; }
-  100% { opacity: 0.7; }
-}
-
-@keyframes foglayer_moveme {
-  0% { left: -100%; }
-  100% { left: 0; }
 }
 
 /* ── Landing page is always visible (no entrance animation) ── */
@@ -1346,13 +1334,4 @@ button:hover {
     height: 42px;
   }
 
-  /* ── Fog layers ── */
-  #foglayer_01 .image01,
-  #foglayer_01 .image02,
-  #foglayer_02 .image01,
-  #foglayer_02 .image02,
-  #foglayer_03 .image01,
-  #foglayer_03 .image02 {
-    width: 100%;
-  }
 }
