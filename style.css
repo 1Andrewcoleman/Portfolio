@@ -119,8 +119,8 @@ body {
   pointer-events: none;
 }
 
-/* ── Condensation overlay on glass cards ── */
-.condensation-canvas {
+/* ── Raindrop overlay on glass cards ── */
+.raindrop-canvas {
   position: absolute;
   inset: 0;
   width: 100%;

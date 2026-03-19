@@ -585,178 +585,264 @@ var ATMOSPHERE = {
 })();
 
 /* ═══════════════════════════════════════
-   Condensation Effect on Glass Cards
+   Raindrop-on-Glass Effect for Glass Cards
    ═══════════════════════════════════════ */
 (function () {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  if ("ontouchstart" in window) return; // skip on touch devices
+  if ("ontouchstart" in window) return;
 
-  var CONDENSATION = {
-    NOISE_SCALE: 0.015,       // size of moisture droplet clusters
-    BASE_ALPHA: 0.35,         // condensation opacity (visible but not overpowering)
-    WIPE_RADIUS: 70,          // radius of cursor clear zone
-    REFORM_SPEED: 0.0006,     // how fast condensation reforms (per ms)
-    TEXTURE_RESOLUTION: 4,    // render at 1/4 resolution for perf
+  var RAIN = {
+    STATIC_DROPS_MIN: 45,
+    STATIC_DROPS_MAX: 75,
+    STATIC_RADIUS_MIN: 1.5,
+    STATIC_RADIUS_MAX: 4,
+    STATIC_ALPHA_MIN: 0.25,
+    STATIC_ALPHA_MAX: 0.55,
+
+    RUNNER_SPAWN_MIN: 3500,     // ms between runner spawns
+    RUNNER_SPAWN_MAX: 6500,
+    RUNNER_RADIUS_MIN: 4,
+    RUNNER_RADIUS_MAX: 7,
+    RUNNER_GRAVITY: 0.012,      // acceleration per frame
+    RUNNER_MAX_SPEED: 2.5,
+    RUNNER_WOBBLE: 0.35,
+    RUNNER_ABSORB_RANGE: 8,     // px — how close to absorb a static drop
+    RUNNER_GROW_RATE: 0.15,     // radius gained per absorbed drop
+
+    TRAIL_DROP_SPACING: 6,      // px between trail drops
+    TRAIL_RADIUS_MIN: 0.8,
+    TRAIL_RADIUS_MAX: 1.8,
+    TRAIL_FADE_TIME: 4000,      // ms for trail to fade out
   };
 
-  var cards = [];
+  /* ── Drop drawing ── */
+  function drawDrop(ctx, x, y, r, alpha, elongation) {
+    elongation = elongation || 1;
+    ctx.save();
+    ctx.translate(x, y);
+    if (elongation !== 1) ctx.scale(1, elongation);
 
-  function initCondensation() {
+    // Outer glow — subtle water edge
+    var grad = ctx.createRadialGradient(0, 0, r * 0.1, 0, 0, r);
+    grad.addColorStop(0, "rgba(255,255,255," + (alpha * 0.7) + ")");
+    grad.addColorStop(0.35, "rgba(200,220,235," + (alpha * 0.35) + ")");
+    grad.addColorStop(0.7, "rgba(180,210,230," + (alpha * 0.15) + ")");
+    grad.addColorStop(1, "rgba(180,210,230,0)");
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Specular highlight — top-left bright spot
+    var hlR = r * 0.35;
+    var hlX = -r * 0.25;
+    var hlY = -r * 0.25;
+    var hlGrad = ctx.createRadialGradient(hlX, hlY, 0, hlX, hlY, hlR);
+    hlGrad.addColorStop(0, "rgba(255,255,255," + (alpha * 0.9) + ")");
+    hlGrad.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.beginPath();
+    ctx.arc(hlX, hlY, hlR, 0, Math.PI * 2);
+    ctx.fillStyle = hlGrad;
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  /* ── Card state manager ── */
+  var cardStates = [];
+
+  function initCards() {
     var glassCards = document.querySelectorAll(".glass-card, .contact-wrapper, .gallery");
-    glassCards.forEach(function (card) {
-      // Ensure positioned parent for the canvas overlay
-      var style = window.getComputedStyle(card);
-      if (style.position === "static") card.style.position = "relative";
+    glassCards.forEach(function (el) {
+      var style = window.getComputedStyle(el);
+      if (style.position === "static") el.style.position = "relative";
 
       var canvas = document.createElement("canvas");
-      canvas.className = "condensation-canvas";
+      canvas.className = "raindrop-canvas";
       canvas.setAttribute("aria-hidden", "true");
-      card.appendChild(canvas);
+      el.appendChild(canvas);
 
       var state = {
-        el: card,
+        el: el,
         canvas: canvas,
         ctx: canvas.getContext("2d"),
         w: 0, h: 0,
-        mouseX: -999, mouseY: -999,
-        wipeX: -999, wipeY: -999, // smoothed wipe position
-        wipeStrength: 0,          // 0 = fully fogged, 1 = fully clear
-        isHovered: false,
-        lastTime: 0,
-        noiseTexture: null,       // pre-computed noise texture imageData
+        staticDrops: [],
+        runners: [],
+        trailDrops: [],
+        nextRunnerAt: performance.now() + randomRange(RAIN.RUNNER_SPAWN_MIN, RAIN.RUNNER_SPAWN_MAX),
+        isVisible: false,
         needsResize: true,
       };
 
-      card.addEventListener("mouseenter", function () { state.isHovered = true; });
-      card.addEventListener("mouseleave", function () { state.isHovered = false; });
-      card.addEventListener("mousemove", function (e) {
-        var rect = card.getBoundingClientRect();
-        state.mouseX = e.clientX - rect.left;
-        state.mouseY = e.clientY - rect.top;
-      });
-
-      cards.push(state);
+      cardStates.push(state);
     });
   }
 
-  function resizeCard(state) {
+  function resizeCardState(state) {
     var rect = state.el.getBoundingClientRect();
     var w = Math.round(rect.width);
     var h = Math.round(rect.height);
-    if (w === state.w && h === state.h) return;
+    if (w === state.w && h === state.h && !state.needsResize) return;
     state.w = w;
     state.h = h;
     state.canvas.width = w;
     state.canvas.height = h;
-    // Pre-compute static noise texture
-    state.noiseTexture = generateNoiseTexture(w, h);
+    // Re-populate static drops for new dimensions
+    populateStaticDrops(state);
     state.needsResize = false;
   }
 
-  function generateNoiseTexture(w, h) {
-    var scale = CONDENSATION.TEXTURE_RESOLUTION;
-    var sw = Math.ceil(w / scale);
-    var sh = Math.ceil(h / scale);
-    var offscreen = document.createElement("canvas");
-    offscreen.width = sw;
-    offscreen.height = sh;
-    var offCtx = offscreen.getContext("2d");
-    var imgData = offCtx.createImageData(sw, sh);
-    var data = imgData.data;
-    var ns = CONDENSATION.NOISE_SCALE;
-
-    // Use a different z-slice than fog so patterns don't correlate
-    var zOffset = 42.7;
-
-    for (var y = 0; y < sh; y++) {
-      for (var x = 0; x < sw; x++) {
-        // Layer multiple noise octaves for organic droplet pattern
-        var n = SimplexNoise.fbm(x * ns, y * ns, zOffset, 3, 0.6);
-        // Map noise to organic moisture pattern — keep peaks as visible droplets
-        var droplet = clamp(n * 1.2 + 0.3, 0, 1);
-        droplet = droplet * droplet;
-
-        var idx = (y * sw + x) * 4;
-        data[idx]     = 200; // slight cool tint (not pure white)
-        data[idx + 1] = 210;
-        data[idx + 2] = 220;
-        data[idx + 3] = (droplet * CONDENSATION.BASE_ALPHA * 255) | 0;
-      }
+  function populateStaticDrops(state) {
+    var count = randomInt(RAIN.STATIC_DROPS_MIN, RAIN.STATIC_DROPS_MAX);
+    state.staticDrops = [];
+    for (var i = 0; i < count; i++) {
+      state.staticDrops.push({
+        x: randomRange(5, state.w - 5),
+        y: randomRange(5, state.h - 5),
+        r: randomRange(RAIN.STATIC_RADIUS_MIN, RAIN.STATIC_RADIUS_MAX),
+        alpha: randomRange(RAIN.STATIC_ALPHA_MIN, RAIN.STATIC_ALPHA_MAX),
+      });
     }
-
-    offCtx.putImageData(imgData, 0, 0);
-    return offscreen;
   }
 
-  function renderCondensation(state, now) {
-    if (!state.noiseTexture || state.w === 0) return;
+  function spawnRunner(state) {
+    state.runners.push({
+      x: randomRange(15, state.w - 15),
+      y: randomRange(-5, 10),
+      r: randomRange(RAIN.RUNNER_RADIUS_MIN, RAIN.RUNNER_RADIUS_MAX),
+      vy: 0.3 + Math.random() * 0.3,
+      alpha: 0.55 + Math.random() * 0.2,
+      lastTrailY: -999,
+    });
+  }
 
-    var dt = state.lastTime > 0 ? now - state.lastTime : 16;
-    state.lastTime = now;
-
-    // Smooth the wipe position toward mouse
-    if (state.isHovered) {
-      state.wipeX = lerp(state.wipeX, state.mouseX, 0.12);
-      state.wipeY = lerp(state.wipeY, state.mouseY, 0.12);
-      state.wipeStrength = Math.min(1, state.wipeStrength + dt * 0.006);
-    } else {
-      // Reform: condensation slowly returns
-      state.wipeStrength = Math.max(0, state.wipeStrength - dt * CONDENSATION.REFORM_SPEED);
-    }
+  function updateCard(state, now) {
+    if (!state.isVisible || state.w === 0) return;
 
     var ctx = state.ctx;
     ctx.clearRect(0, 0, state.w, state.h);
 
-    // Draw the noise texture (scaled up from low res)
-    ctx.globalAlpha = 1;
-    ctx.drawImage(state.noiseTexture, 0, 0, state.w, state.h);
+    // Draw static drops
+    for (var i = 0; i < state.staticDrops.length; i++) {
+      var sd = state.staticDrops[i];
+      drawDrop(ctx, sd.x, sd.y, sd.r, sd.alpha, 1);
+    }
 
-    if (state.wipeStrength > 0.01) {
-      // Erase a soft circular area at the wipe position
-      ctx.globalCompositeOperation = "destination-out";
-      var r = CONDENSATION.WIPE_RADIUS * state.wipeStrength;
-      var grad = ctx.createRadialGradient(
-        state.wipeX, state.wipeY, 0,
-        state.wipeX, state.wipeY, r
-      );
-      grad.addColorStop(0, "rgba(0,0,0," + state.wipeStrength + ")");
-      grad.addColorStop(0.5, "rgba(0,0,0," + (state.wipeStrength * 0.6) + ")");
-      grad.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(state.wipeX, state.wipeY, r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.globalCompositeOperation = "source-over";
+    // Draw trail drops (fading)
+    for (var t = state.trailDrops.length - 1; t >= 0; t--) {
+      var td = state.trailDrops[t];
+      var age = now - td.born;
+      if (age > RAIN.TRAIL_FADE_TIME) {
+        state.trailDrops.splice(t, 1);
+        continue;
+      }
+      var fadeAlpha = td.alpha * (1 - age / RAIN.TRAIL_FADE_TIME);
+      drawDrop(ctx, td.x, td.y, td.r, fadeAlpha, 1);
+    }
+
+    // Spawn new runners
+    if (now >= state.nextRunnerAt) {
+      spawnRunner(state);
+      state.nextRunnerAt = now + randomRange(RAIN.RUNNER_SPAWN_MIN, RAIN.RUNNER_SPAWN_MAX);
+    }
+
+    // Update & draw runner drops
+    for (var j = state.runners.length - 1; j >= 0; j--) {
+      var rd = state.runners[j];
+
+      // Gravity acceleration
+      rd.vy = Math.min(rd.vy + RAIN.RUNNER_GRAVITY, RAIN.RUNNER_MAX_SPEED);
+      rd.y += rd.vy;
+      // Horizontal wobble
+      rd.x += (Math.random() - 0.5) * RAIN.RUNNER_WOBBLE;
+
+      // Leave trail drops
+      if (rd.y - rd.lastTrailY > RAIN.TRAIL_DROP_SPACING) {
+        state.trailDrops.push({
+          x: rd.x + (Math.random() - 0.5) * 2,
+          y: rd.y - rd.r,
+          r: randomRange(RAIN.TRAIL_RADIUS_MIN, RAIN.TRAIL_RADIUS_MAX),
+          alpha: rd.alpha * 0.5,
+          born: now,
+        });
+        rd.lastTrailY = rd.y;
+      }
+
+      // Check absorption of static drops
+      for (var k = state.staticDrops.length - 1; k >= 0; k--) {
+        var sd2 = state.staticDrops[k];
+        var dx = rd.x - sd2.x;
+        var dy = rd.y - sd2.y;
+        if (dx * dx + dy * dy < RAIN.RUNNER_ABSORB_RANGE * RAIN.RUNNER_ABSORB_RANGE) {
+          // Absorb: runner grows, static drop removed
+          rd.r = Math.min(rd.r + RAIN.RUNNER_GROW_RATE, 12);
+          rd.vy *= 1.02; // slightly accelerate from mass gain
+          state.staticDrops.splice(k, 1);
+        }
+      }
+
+      // Draw runner (slightly elongated vertically based on speed)
+      var elongation = 1 + rd.vy * 0.12;
+      drawDrop(ctx, rd.x, rd.y, rd.r, rd.alpha, elongation);
+
+      // Remove if off-screen
+      if (rd.y > state.h + 20) {
+        state.runners.splice(j, 1);
+      }
+    }
+
+    // Replenish static drops slowly (replace absorbed ones)
+    if (state.staticDrops.length < RAIN.STATIC_DROPS_MIN) {
+      state.staticDrops.push({
+        x: randomRange(5, state.w - 5),
+        y: randomRange(5, state.h - 5),
+        r: randomRange(RAIN.STATIC_RADIUS_MIN, RAIN.STATIC_RADIUS_MAX),
+        alpha: randomRange(RAIN.STATIC_ALPHA_MIN, RAIN.STATIC_ALPHA_MAX) * 0.5, // fade in subtle
+      });
     }
   }
 
-  // Animation loop for condensation (separate from atmosphere for independence)
-  var condensationRAF;
-  function condensationLoop(now) {
-    for (var i = 0; i < cards.length; i++) {
-      if (cards[i].needsResize) resizeCard(cards[i]);
-      renderCondensation(cards[i], now);
-    }
-    condensationRAF = requestAnimationFrame(condensationLoop);
-  }
-
-  // Init after DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () {
-      initCondensation();
-      // Resize all cards initially
-      cards.forEach(function (s) { resizeCard(s); });
-      condensationRAF = requestAnimationFrame(condensationLoop);
+  /* ── Visibility tracking ── */
+  var visObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      // Find the card state for this element
+      for (var i = 0; i < cardStates.length; i++) {
+        if (cardStates[i].el === entry.target) {
+          cardStates[i].isVisible = entry.isIntersecting;
+          break;
+        }
+      }
     });
-  } else {
-    initCondensation();
-    cards.forEach(function (s) { resizeCard(s); });
-    condensationRAF = requestAnimationFrame(condensationLoop);
+  }, { threshold: 0.05 });
+
+  /* ── Animation loop ── */
+  function raindropLoop(now) {
+    for (var i = 0; i < cardStates.length; i++) {
+      if (cardStates[i].needsResize) resizeCardState(cardStates[i]);
+      updateCard(cardStates[i], now);
+    }
+    requestAnimationFrame(raindropLoop);
   }
 
-  // Handle resize
+  /* ── Init ── */
+  function init() {
+    initCards();
+    cardStates.forEach(function (s) {
+      resizeCardState(s);
+      visObserver.observe(s.el);
+    });
+    requestAnimationFrame(raindropLoop);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
   window.addEventListener("resize", function () {
-    cards.forEach(function (s) { s.needsResize = true; });
+    cardStates.forEach(function (s) { s.needsResize = true; });
   });
 })();
 
