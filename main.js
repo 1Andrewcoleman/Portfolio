@@ -145,22 +145,22 @@ var ATMOSPHERE = {
   STAR_DENSITY: 1000,
   STAR_MAX_RADIUS: 1.2,
   STAR_HUES: [0, 60, 210, 240],
-  TWINKLE_SPEED_MIN: 0.3,
-  TWINKLE_SPEED_MAX: 1.5,
-  DRIFT_SPEED: 0.015,
+  TWINKLE_SPEED_MIN: 0.25,
+  TWINKLE_SPEED_MAX: 1.27,
+  DRIFT_SPEED: 0.013,
   PARALLAX_SMOOTHING: 0.08,
 
-  SHOOTING_STAR_MIN_INTERVAL: 8000,
-  SHOOTING_STAR_MAX_INTERVAL: 15000,
+  SHOOTING_STAR_MIN_INTERVAL: 3000,
+  SHOOTING_STAR_MAX_INTERVAL: 8000,
   SHOOTING_STAR_SPEED: 10,
   SHOOTING_STAR_TRAIL_LENGTH: 25,
 
-  MIST_SPAWN_RATE: 3,
-  MIST_MAX_PARTICLES: 60,
-  MIST_LIFETIME_MIN: 500,
-  MIST_LIFETIME_MAX: 1000,
-  MIST_OPACITY: 0.35,
-  MIST_RADIUS_MAX: 5,
+  MIST_SPAWN_RATE: 2,
+  MIST_MAX_PARTICLES: 40,
+  MIST_LIFETIME_MIN: 600,
+  MIST_LIFETIME_MAX: 1200,
+  MIST_OPACITY: 0.30,
+  MIST_RADIUS_MAX: 10,
 
   IDLE_THRESHOLD: 10000,
 
@@ -263,9 +263,9 @@ var ATMOSPHERE = {
 
   /* ── Mist Particle ── */
   function MistParticle(x, y) {
-    this.x = x + (Math.random() - 0.5) * 20;
-    this.y = y + (Math.random() - 0.5) * 20;
-    this.radius = 1 + Math.random() * ATMOSPHERE.MIST_RADIUS_MAX;
+    this.x = x + (Math.random() - 0.5) * 30;
+    this.y = y + (Math.random() - 0.5) * 30;
+    this.radius = 3 + Math.random() * ATMOSPHERE.MIST_RADIUS_MAX;
     this.maxOpacity = ATMOSPHERE.MIST_OPACITY * (0.5 + Math.random() * 0.5);
     this.life = randomRange(ATMOSPHERE.MIST_LIFETIME_MIN, ATMOSPHERE.MIST_LIFETIME_MAX);
     this.born = -1;
@@ -285,9 +285,14 @@ var ATMOSPHERE = {
 
   MistParticle.prototype.draw = function () {
     if (this.opacity <= 0) return;
+    // Soft radial gradient for a misty look instead of hard circles
+    var grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+    grad.addColorStop(0, "rgba(255,255,255," + (this.opacity * 0.8) + ")");
+    grad.addColorStop(0.4, "rgba(255,255,255," + (this.opacity * 0.3) + ")");
+    grad.addColorStop(1, "rgba(255,255,255,0)");
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(255,255,255," + this.opacity + ")";
+    ctx.fillStyle = grad;
     ctx.fill();
   };
 
@@ -425,10 +430,10 @@ var ATMOSPHERE = {
 
   /* ── Scroll-driven atmosphere parameters ── */
   var atmosphereKeyframes = [
-    { at: 0.0,  starBright: 1.0, fogDensity: 0.40, bgTop: [12,17,22], bgBot: [22,25,39] },
-    { at: 0.33, starBright: 0.7, fogDensity: 0.25, bgTop: [17,24,39], bgBot: [26,31,46] },
-    { at: 0.66, starBright: 0.5, fogDensity: 0.45, bgTop: [15,21,32], bgBot: [21,28,42] },
-    { at: 1.0,  starBright: 0.8, fogDensity: 0.30, bgTop: [17,21,32], bgBot: [26,28,40] },
+    { at: 0.0,  starBright: 1.0, fogDensity: 0.32, bgTop: [12,17,22], bgBot: [22,25,39] },
+    { at: 0.33, starBright: 0.7, fogDensity: 0.20, bgTop: [17,24,39], bgBot: [26,31,46] },
+    { at: 0.66, starBright: 0.5, fogDensity: 0.36, bgTop: [15,21,32], bgBot: [21,28,42] },
+    { at: 1.0,  starBright: 0.8, fogDensity: 0.24, bgTop: [17,21,32], bgBot: [26,28,40] },
   ];
 
   function getAtmosphereParams(progress) {
