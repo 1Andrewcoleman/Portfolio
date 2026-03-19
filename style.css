@@ -68,6 +68,21 @@ body {
   font-family: var(--font-sans);
 }
 
+/* ── Inline SVG icon base ── */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+  overflow: visible;
+}
+
+.icon-2x {
+  width: 2em;
+  height: 2em;
+}
+
 /* ── Skip to content (accessibility) ── */
 .skip-link {
   position: absolute;
@@ -367,9 +382,9 @@ textarea::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.list-item i {
+.list-item .icon {
   width: 24px;
-  text-align: center;
+  height: 24px;
   flex-shrink: 0;
 }
 
