@@ -611,35 +611,60 @@ var ATMOSPHERE = {
       canvas.height = Math.round(rect.height);
 
       try {
-        var bgSvg = "data:image/svg+xml," + encodeURIComponent(
-          '<svg xmlns="http://www.w3.org/2000/svg" width="' + canvas.width + '" height="' + canvas.height + '">' +
-          '<rect width="100%" height="100%" fill="rgb(18,22,30)" />' +
-          '</svg>'
-        );
+        // Create a gradient background so drops have something visible to refract
+        var bgCanvas = document.createElement("canvas");
+        bgCanvas.width = canvas.width;
+        bgCanvas.height = canvas.height;
+        var bgCtx = bgCanvas.getContext("2d");
+        var bgGrad = bgCtx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        bgGrad.addColorStop(0, "rgb(25, 35, 55)");
+        bgGrad.addColorStop(0.3, "rgb(15, 22, 35)");
+        bgGrad.addColorStop(0.6, "rgb(30, 40, 60)");
+        bgGrad.addColorStop(1, "rgb(12, 18, 28)");
+        bgCtx.fillStyle = bgGrad;
+        bgCtx.fillRect(0, 0, canvas.width, canvas.height);
+        // Add some subtle lighter patches for refraction contrast
+        for (var p = 0; p < 8; p++) {
+          var px = Math.random() * canvas.width;
+          var py = Math.random() * canvas.height;
+          var pr = 40 + Math.random() * 80;
+          var pGrad = bgCtx.createRadialGradient(px, py, 0, px, py, pr);
+          pGrad.addColorStop(0, "rgba(60, 80, 110, 0.4)");
+          pGrad.addColorStop(1, "rgba(60, 80, 110, 0)");
+          bgCtx.fillStyle = pGrad;
+          bgCtx.fillRect(px - pr, py - pr, pr * 2, pr * 2);
+        }
+
         var fx = new RaindropFX({
           canvas: canvas,
-          background: bgSvg,
+          background: bgCanvas,
           width: canvas.width,
           height: canvas.height,
-          spawnInterval: [0.15, 0.4],
+          spawnInterval: [0.2, 0.5],
           spawnSize: [30, 80],
           spawnLimit: 300,
           gravity: 1800,
           slipRate: 0.6,
           motionInterval: [0.5, 2],
-          backgroundBlurSteps: 2,
+          backgroundBlurSteps: 1,
           mist: true,
           mistTime: 5,
-          mistBlurStep: 3,
-          mistColor: [0.01, 0.01, 0.01, 1],
-          dropletsPerSeconds: 200,
+          mistBlurStep: 2,
+          mistColor: [0.02, 0.03, 0.04, 1],
+          dropletsPerSeconds: 150,
           dropletSize: [3, 10],
           trailDropDensity: 0.3,
           trailDistance: [20, 40],
           colliderSize: 1,
           smoothRaindrop: [0.95, 1],
-          refractBase: 0.3,
-          refractScale: 0.5,
+          refractBase: 0.5,
+          refractScale: 0.8,
+          raindropLightPos: [-1, 1, 2, 0],
+          raindropDiffuseLight: [0.4, 0.4, 0.4],
+          raindropShadowOffset: 0.6,
+          raindropSpecularLight: [0.5, 0.5, 0.5],
+          raindropSpecularShininess: 64,
+          raindropLightBump: 2,
         });
         var inst = { el: el, canvas: canvas, fx: fx, ready: false };
         fx.start().then(function() {
