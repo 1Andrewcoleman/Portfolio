@@ -157,10 +157,10 @@ var ATMOSPHERE = {
 
   MIST_SPAWN_RATE: 3,
   MIST_MAX_PARTICLES: 60,
-  MIST_LIFETIME_MIN: 400,
-  MIST_LIFETIME_MAX: 800,
-  MIST_OPACITY: 0.25,
-  MIST_RADIUS_MAX: 4,
+  MIST_LIFETIME_MIN: 500,
+  MIST_LIFETIME_MAX: 1000,
+  MIST_OPACITY: 0.35,
+  MIST_RADIUS_MAX: 5,
 
   IDLE_THRESHOLD: 10000,
 
@@ -169,9 +169,9 @@ var ATMOSPHERE = {
   FOG_TIME_SCALE: 0.15,
   FOG_CLEAR_RADIUS: 80,
 
-  HERO_FOG_NOISE_SCALE: 0.004,
-  HERO_FOG_DENSITY: 0.7,
-  HERO_FOG_DRIFT_SPEED: 0.15,
+  HERO_FOG_NOISE_SCALE: 0.003,
+  HERO_FOG_DENSITY: 0.9,
+  HERO_FOG_DRIFT_SPEED: 0.12,
 };
 
 (function () {
@@ -326,7 +326,8 @@ var ATMOSPHERE = {
           3, 0.5
         );
 
-        var alpha = clamp((n + 1) * 0.5, 0, 1) * density;
+        var raw = clamp((n + 1) * 0.5, 0, 1);
+        var alpha = raw * raw * density;
 
         if (mouseInfluence > 0) {
           var dx = x - cmx;
@@ -393,11 +394,11 @@ var ATMOSPHERE = {
     var ns = ATMOSPHERE.HERO_FOG_NOISE_SCALE;
     var driftSpeed = ATMOSPHERE.HERO_FOG_DRIFT_SPEED;
     var baseDensity = ATMOSPHERE.HERO_FOG_DENSITY;
-    var pulseDensity = baseDensity * (0.8 + 0.2 * Math.sin(time * 0.3));
+    var pulseDensity = baseDensity * (0.85 + 0.15 * Math.sin(time * 0.3));
 
     for (var y = 0; y < fh; y++) {
       // Fog is present everywhere but denser toward the bottom (ground fog)
-      var verticalGradient = 0.3 + 0.7 * smoothstep(fh * 0.15, fh * 0.7, y);
+      var verticalGradient = 0.4 + 0.6 * smoothstep(fh * 0.1, fh * 0.6, y);
       for (var x = 0; x < fw; x++) {
         var n = SimplexNoise.fbm(
           x * ns + time * driftSpeed,
@@ -406,8 +407,9 @@ var ATMOSPHERE = {
           3, 0.5
         );
 
-        // Shift noise mapping to produce more visible fog patches
-        var alpha = clamp(n * 0.6 + 0.5, 0, 1) * pulseDensity * verticalGradient;
+        // Map noise to fog density — use power curve for more distinct cloud patches
+        var raw = clamp((n + 1) * 0.5, 0, 1);
+        var alpha = raw * raw * pulseDensity * verticalGradient;
 
         var idx = (y * fw + x) * 4;
         data[idx]     = 255;
@@ -423,10 +425,10 @@ var ATMOSPHERE = {
 
   /* ── Scroll-driven atmosphere parameters ── */
   var atmosphereKeyframes = [
-    { at: 0.0,  starBright: 1.0, fogDensity: 0.25, bgTop: [12,17,22], bgBot: [22,25,39] },
-    { at: 0.33, starBright: 0.7, fogDensity: 0.15, bgTop: [17,24,39], bgBot: [26,31,46] },
-    { at: 0.66, starBright: 0.5, fogDensity: 0.30, bgTop: [15,21,32], bgBot: [21,28,42] },
-    { at: 1.0,  starBright: 0.8, fogDensity: 0.18, bgTop: [17,21,32], bgBot: [26,28,40] },
+    { at: 0.0,  starBright: 1.0, fogDensity: 0.40, bgTop: [12,17,22], bgBot: [22,25,39] },
+    { at: 0.33, starBright: 0.7, fogDensity: 0.25, bgTop: [17,24,39], bgBot: [26,31,46] },
+    { at: 0.66, starBright: 0.5, fogDensity: 0.45, bgTop: [15,21,32], bgBot: [21,28,42] },
+    { at: 1.0,  starBright: 0.8, fogDensity: 0.30, bgTop: [17,21,32], bgBot: [26,28,40] },
   ];
 
   function getAtmosphereParams(progress) {
