@@ -611,32 +611,45 @@ var ATMOSPHERE = {
       canvas.height = Math.round(rect.height);
 
       try {
+        var bgSvg = "data:image/svg+xml," + encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="' + canvas.width + '" height="' + canvas.height + '">' +
+          '<rect width="100%" height="100%" fill="rgb(18,22,30)" />' +
+          '</svg>'
+        );
         var fx = new RaindropFX({
           canvas: canvas,
-          background: "data:image/svg+xml," + encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="' + canvas.width + '" height="' + canvas.height + '">' +
-            '<rect width="100%" height="100%" fill="rgb(18,22,30)" />' +
-            '</svg>'
-          ),
+          background: bgSvg,
+          width: canvas.width,
+          height: canvas.height,
+          spawnInterval: [0.15, 0.4],
+          spawnSize: [30, 80],
+          spawnLimit: 300,
+          gravity: 1800,
+          slipRate: 0.6,
+          motionInterval: [0.5, 2],
+          backgroundBlurSteps: 2,
           mist: true,
-          mistTime: 3,
+          mistTime: 5,
           mistBlurStep: 3,
-          spawnInterval: [0.1, 0.3],
-          spawnSize: [20, 80],
-          spawnLimit: 500,
-          slipRate: 0.7,
-          motionInterval: [0.7, 2],
-          motionRate: 0.6,
-          dropletsRate: 30,
-          dropletsSize: [2, 4],
-          dropletsCleaningTimer: 0,
-          smooth: true,
-          fps: 24,
+          mistColor: [0.01, 0.01, 0.01, 1],
+          dropletsPerSeconds: 200,
+          dropletSize: [3, 10],
+          trailDropDensity: 0.3,
+          trailDistance: [20, 40],
+          colliderSize: 1,
+          smoothRaindrop: [0.95, 1],
+          refractBase: 0.3,
+          refractScale: 0.5,
         });
-        fx.start();
+        fx.start().then(function() {
+          // started successfully
+        }).catch(function(err) {
+          console.warn("RaindropFX start failed:", err);
+          canvas.remove();
+        });
         instances.push({ el: el, canvas: canvas, fx: fx });
       } catch (e) {
-        // WebGL2 not available — silently skip
+        console.warn("RaindropFX init failed:", e);
         canvas.remove();
       }
     });
