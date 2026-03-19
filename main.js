@@ -155,12 +155,12 @@ var ATMOSPHERE = {
   SHOOTING_STAR_SPEED: 10,
   SHOOTING_STAR_TRAIL_LENGTH: 25,
 
-  MIST_SPAWN_RATE: 2,
-  MIST_MAX_PARTICLES: 50,
+  MIST_SPAWN_RATE: 3,
+  MIST_MAX_PARTICLES: 60,
   MIST_LIFETIME_MIN: 400,
   MIST_LIFETIME_MAX: 800,
-  MIST_OPACITY: 0.18,
-  MIST_RADIUS_MAX: 3,
+  MIST_OPACITY: 0.25,
+  MIST_RADIUS_MAX: 4,
 
   IDLE_THRESHOLD: 10000,
 
@@ -169,9 +169,9 @@ var ATMOSPHERE = {
   FOG_TIME_SCALE: 0.15,
   FOG_CLEAR_RADIUS: 80,
 
-  HERO_FOG_NOISE_SCALE: 0.005,
-  HERO_FOG_DENSITY: 0.55,
-  HERO_FOG_DRIFT_SPEED: 0.18,
+  HERO_FOG_NOISE_SCALE: 0.004,
+  HERO_FOG_DENSITY: 0.7,
+  HERO_FOG_DRIFT_SPEED: 0.15,
 };
 
 (function () {
@@ -393,7 +393,7 @@ var ATMOSPHERE = {
     var ns = ATMOSPHERE.HERO_FOG_NOISE_SCALE;
     var driftSpeed = ATMOSPHERE.HERO_FOG_DRIFT_SPEED;
     var baseDensity = ATMOSPHERE.HERO_FOG_DENSITY;
-    var pulseDensity = baseDensity * (0.7 + 0.3 * Math.sin(time * 0.3));
+    var pulseDensity = baseDensity * (0.8 + 0.2 * Math.sin(time * 0.3));
 
     for (var y = 0; y < fh; y++) {
       // Fog is present everywhere but denser toward the bottom (ground fog)
@@ -406,7 +406,8 @@ var ATMOSPHERE = {
           3, 0.5
         );
 
-        var alpha = clamp((n + 1) * 0.5, 0, 1) * pulseDensity * verticalGradient;
+        // Shift noise mapping to produce more visible fog patches
+        var alpha = clamp(n * 0.6 + 0.5, 0, 1) * pulseDensity * verticalGradient;
 
         var idx = (y * fw + x) * 4;
         data[idx]     = 255;
@@ -422,10 +423,10 @@ var ATMOSPHERE = {
 
   /* ── Scroll-driven atmosphere parameters ── */
   var atmosphereKeyframes = [
-    { at: 0.0,  starBright: 1.0, fogDensity: 0.20, bgTop: [12,17,22], bgBot: [22,25,39] },
-    { at: 0.33, starBright: 0.7, fogDensity: 0.10, bgTop: [17,24,39], bgBot: [26,31,46] },
-    { at: 0.66, starBright: 0.5, fogDensity: 0.25, bgTop: [15,21,32], bgBot: [21,28,42] },
-    { at: 1.0,  starBright: 0.8, fogDensity: 0.12, bgTop: [17,21,32], bgBot: [26,28,40] },
+    { at: 0.0,  starBright: 1.0, fogDensity: 0.25, bgTop: [12,17,22], bgBot: [22,25,39] },
+    { at: 0.33, starBright: 0.7, fogDensity: 0.15, bgTop: [17,24,39], bgBot: [26,31,46] },
+    { at: 0.66, starBright: 0.5, fogDensity: 0.30, bgTop: [15,21,32], bgBot: [21,28,42] },
+    { at: 1.0,  starBright: 0.8, fogDensity: 0.18, bgTop: [17,21,32], bgBot: [26,28,40] },
   ];
 
   function getAtmosphereParams(progress) {
