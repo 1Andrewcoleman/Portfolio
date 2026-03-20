@@ -802,48 +802,47 @@ html.fog-reveal .section-scroll-layer::after {
     text-shadow 0.2s ease;
 }
 
-/* About section — hover interactions (fine pointers only) */
-@media (hover: hover) {
-  .about-card:hover {
-    border-color: rgba(255, 255, 255, 0.14);
-    background: rgba(18, 24, 34, 0.62);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
-  }
-
-  #about-me .detail-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(255, 255, 255, 0.12);
-    box-shadow:
-      0 14px 36px rgba(0, 0, 0, 0.32),
-      0 0 0 1px rgba(70, 185, 108, 0.12);
-  }
-
-  .about-intro h2:hover::after {
-    transform: scaleX(1);
-  }
-
-  .about-photo img:hover {
-    outline: var(--b) solid var(--c);
-    outline-offset: calc(var(--s) / -2);
-    --_i: calc(100% - 2 * var(--s));
-  }
-
-  .timeline-item:hover .timeline-school {
-    color: var(--accent);
-  }
-
-  .skill-pills .pill:hover {
-    animation: about-pill-glow 0.65s ease-out 1;
-  }
-
-  .about-highlight:hover {
-    color: var(--accent) !important;
-    border-bottom-color: rgba(70, 185, 108, 0.45);
-    text-shadow: 0 0 10px rgba(70, 185, 108, 0.35);
-  }
+/* About section — hover (not gated on @media (hover: hover): many touch-capable
+   laptops/tablets report hover: none, which hid all of these rules.) */
+.about-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(18, 24, 34, 0.62);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
 }
 
-@media (hover: hover) and (prefers-reduced-motion: reduce) {
+#about-me .detail-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(70, 185, 108, 0.12);
+}
+
+.about-intro h2:hover::after {
+  transform: scaleX(1);
+}
+
+.about-photo img:hover {
+  outline: var(--b) solid var(--c);
+  outline-offset: calc(var(--s) / -2);
+  --_i: calc(100% - 2 * var(--s));
+}
+
+.timeline-item:hover .timeline-school {
+  color: var(--accent);
+}
+
+.skill-pills .pill:hover {
+  animation: about-pill-glow 0.65s ease-out 1;
+}
+
+.about-highlight:hover {
+  color: var(--accent) !important;
+  border-bottom-color: rgba(70, 185, 108, 0.45);
+  text-shadow: 0 0 10px rgba(70, 185, 108, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
   #about-me .detail-card:hover {
     transform: none;
   }
