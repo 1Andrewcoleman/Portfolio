@@ -784,12 +784,22 @@ html.fog-reveal .section-scroll-layer::after {
   }
 }
 
+/* Explicit colors — avoid `color: inherit` here: parent `.about-personal` uses
+   `color: … !important`, which re-traps inherited text when spans use `inherit`. */
+.about-intro p:not(.about-personal) .about-highlight {
+  color: var(--text-secondary);
+}
+
+.about-personal .about-highlight {
+  color: var(--text-muted);
+}
+
 .about-highlight {
-  color: inherit;
   border-bottom: 1px solid transparent;
   transition:
     color 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    text-shadow 0.2s ease;
 }
 
 /* About section — hover interactions (fine pointers only) */
@@ -827,14 +837,9 @@ html.fog-reveal .section-scroll-layer::after {
   }
 
   .about-highlight:hover {
-    color: var(--accent);
-    border-bottom-color: rgba(70, 185, 108, 0.45);
-  }
-
-  /* Beat .about-personal color !important */
-  .about-personal .about-highlight:hover {
     color: var(--accent) !important;
     border-bottom-color: rgba(70, 185, 108, 0.45);
+    text-shadow: 0 0 10px rgba(70, 185, 108, 0.35);
   }
 }
 
