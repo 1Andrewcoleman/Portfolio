@@ -830,6 +830,12 @@ html.fog-reveal .section-scroll-layer::after {
     color: var(--accent);
     border-bottom-color: rgba(70, 185, 108, 0.45);
   }
+
+  /* Beat .about-personal color !important */
+  .about-personal .about-highlight:hover {
+    color: var(--accent) !important;
+    border-bottom-color: rgba(70, 185, 108, 0.45);
+  }
 }
 
 @media (hover: hover) and (prefers-reduced-motion: reduce) {
