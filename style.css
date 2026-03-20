@@ -47,6 +47,8 @@
   --radius-sm: 8px;
   --font-mono: "Consolas", "Monaco", monospace;
   --font-sans: "Lato", sans-serif;
+  /* Hand-drawn-style marker swipe (SVG), stretched under .about-highlight text */
+  --about-marker-highlight: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%2012%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%2346b96c%22%20fill-opacity%3D%220.3%22%20d%3D%22M0%2C7.5%20C18%2C3.5%2038%2C9%2058%2C5.5%20C76%2C3%2092%2C7%20100%2C6.5%20L100%2C11%20C78%2C12%2048%2C11.5%2022%2C11%20L0%2C10.2%20Z%22%2F%3E%3C%2Fsvg%3E");
 }
 
 * {
@@ -795,10 +797,16 @@ html.fog-reveal .section-scroll-layer::after {
 }
 
 .about-highlight {
-  border-bottom: 1px solid transparent;
+  padding: 0 0.12em 0.14em;
+  margin: 0 -0.04em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background-image: var(--about-marker-highlight);
+  background-repeat: no-repeat;
+  background-position: left calc(100% - 0.06em);
+  background-size: 100% 0.5em;
   transition:
     color 0.2s ease,
-    border-color 0.2s ease,
     text-shadow 0.2s ease;
 }
 
@@ -838,7 +846,6 @@ html.fog-reveal .section-scroll-layer::after {
 
 .about-highlight:hover {
   color: var(--accent) !important;
-  border-bottom-color: rgba(70, 185, 108, 0.45);
   text-shadow: 0 0 10px rgba(70, 185, 108, 0.35);
 }
 
