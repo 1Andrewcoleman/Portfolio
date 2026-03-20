@@ -36,7 +36,7 @@ The site is fully functional for browsing without the API. The contact form's em
 - `api/send-email.js` is designed for Vercel-style serverless deployment; locally it runs as a standalone Express server on port 3001.
 - jQuery and Bootstrap have been removed — all styling/interaction is custom.
 - Zero external CDN dependencies — fonts self-hosted, icons inline SVGs, fog procedural.
-- The site uses scroll-based navigation with IntersectionObserver for active nav state and entrance animations.
+- The site uses scroll-based navigation with IntersectionObserver for active nav state and scroll-linked section opacity (`--scroll-fade`). Optional **fog-reveal** experiment: add `?fog-reveal=1` to the URL (persists in `localStorage` as `fogReveal`; `?fog-reveal=0` clears). When enabled, `html` gets class `fog-reveal` and a mist veil uses the same scroll signal on `.section-scroll-layer` only (portfolio modals stay outside that wrapper).
 - CSS uses custom properties defined in `:root` for colors, fonts, radii, and blur values.
 - Atmospheric canvas system (`#atmosphere`): requestAnimationFrame loop with twinkling stars, shooting stars, procedural simplex-noise fog, scroll-driven background shifts, cursor mist trail, and idle weather behavior.
 - Hero fog canvas (`#hero-fog`): separate procedural fog overlay positioned within the hero section.

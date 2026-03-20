@@ -593,6 +593,23 @@ var ATMOSPHERE = {
    Navigation + Scroll Animations
    ═══════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", function () {
+  // ── Optional fog-reveal experiment (?fog-reveal=1 | 0, localStorage fogReveal) ──
+  (function initFogRevealExperiment() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get("fog-reveal") === "1") {
+        localStorage.setItem("fogReveal", "1");
+      } else if (params.get("fog-reveal") === "0") {
+        localStorage.removeItem("fogReveal");
+      }
+      if (localStorage.getItem("fogReveal") === "1") {
+        document.documentElement.classList.add("fog-reveal");
+      }
+    } catch (err) {
+      /* ignore private mode / quota */
+    }
+  })();
+
   // ── Smooth scroll navigation ──
   document.querySelectorAll(".vertical-navbar a").forEach(function (link) {
     link.addEventListener("click", function (e) {

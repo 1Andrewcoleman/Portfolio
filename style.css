@@ -504,9 +504,75 @@ section {
   );
 }
 
+/* Wrapper for scroll content (portfolio modals stay outside this layer). */
+.section-scroll-layer {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#about-me > .section-scroll-layer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex: 1 1 auto;
+  align-self: stretch;
+}
+
+#portfolio > .section-scroll-layer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+}
+
+#contact > .section-scroll-layer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+/* Optional experiment: fog veil on .section-scroll-layer only (enable via ?fog-reveal=1) */
+html.fog-reveal section {
+  opacity: 1 !important;
+}
+
+html.fog-reveal .section-scroll-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+  --fog-veil: calc(1 - var(--scroll-fade, 1));
+  opacity: calc(var(--fog-veil) * 0.78);
+  background: linear-gradient(
+    180deg,
+    rgba(12, 14, 22, 0.55) 0%,
+    rgba(8, 10, 18, 0.38) 42%,
+    rgba(12, 14, 22, 0.52) 100%
+  );
+  backdrop-filter: blur(calc(var(--fog-veil) * 3px));
+  -webkit-backdrop-filter: blur(calc(var(--fog-veil) * 3px));
+}
+
 @media (prefers-reduced-motion: reduce) {
   section {
     opacity: 1 !important;
+    --scroll-fade: 1 !important;
+  }
+
+  html.fog-reveal .section-scroll-layer::after {
+    opacity: 0 !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }
 
