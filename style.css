@@ -490,16 +490,24 @@ hr {
   margin-top: 4px;
 }
 
-/* ── Scroll-triggered entrance animations ── */
-section {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+/* ── Scroll-linked section fade (see main.js --scroll-fade) ── */
+:root {
+  --section-fade-min-opacity: 0.2;
 }
 
-section.in-view {
-  opacity: 1;
-  transform: translateY(0);
+/* Opacity only — no transform on section (portfolio modals use position:fixed inside #portfolio). */
+section {
+  --scroll-fade: 0.35;
+  opacity: calc(
+    var(--section-fade-min-opacity) +
+      (1 - var(--section-fade-min-opacity)) * var(--scroll-fade)
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  section {
+    opacity: 1 !important;
+  }
 }
 
 /* ── Glass card utility ── */

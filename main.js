@@ -630,21 +630,65 @@ document.addEventListener("DOMContentLoaded", function () {
     sectionObserver.observe(section);
   });
 
-  // ── Scroll-triggered entrance animations ──
-  var animObserver = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("in-view");
-        }
-      });
-    },
-    { threshold: 0.1 }
-  );
+  // ── Scroll-linked section fade (into / out of "fog") ──
+  (function initSectionScrollFade() {
+    var fadeSections = document.querySelectorAll("section");
+    if (!fadeSections.length) return;
 
-  document.querySelectorAll("section").forEach(function (s) {
-    animObserver.observe(s);
-  });
+    var motionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function sectionScrollPresence(rect, vh) {
+      var overlap = Math.max(0, Math.min(rect.bottom, vh) - Math.max(rect.top, 0));
+      if (overlap <= 0) return 0;
+      var visibleFraction = overlap / Math.max(rect.height, 1);
+      var topClamp = Math.max(rect.top, 0);
+      var botClamp = Math.min(rect.bottom, vh);
+      var overlapMid = (topClamp + botClamp) * 0.5;
+      var dist = Math.abs(overlapMid - vh * 0.5);
+      var focus = 1 - smoothstep(vh * 0.07, vh * 0.4, dist);
+      var presence = visibleFraction * focus;
+      presence = smoothstep(0, 1, presence * 1.2);
+      return clamp(presence, 0, 1);
+    }
+
+    var ticking = false;
+    function updateSectionFades() {
+      ticking = false;
+      if (motionMq.matches) {
+        fadeSections.forEach(function (el) {
+          el.style.removeProperty("--scroll-fade");
+        });
+        return;
+      }
+      var vh = window.innerHeight;
+      fadeSections.forEach(function (el) {
+        var p = sectionScrollPresence(el.getBoundingClientRect(), vh);
+        el.style.setProperty("--scroll-fade", p.toFixed(4));
+      });
+    }
+
+    function requestFadeUpdate() {
+      if (motionMq.matches) return;
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(updateSectionFades);
+      }
+    }
+
+    motionMq.addEventListener("change", function () {
+      if (motionMq.matches) {
+        fadeSections.forEach(function (el) {
+          el.style.removeProperty("--scroll-fade");
+        });
+      } else {
+        updateSectionFades();
+      }
+    });
+
+    window.addEventListener("scroll", requestFadeUpdate, { passive: true });
+    window.addEventListener("resize", requestFadeUpdate, { passive: true });
+    requestFadeUpdate();
+  })();
 
   // ── Deep link support ──
   if (window.location.hash) {
