@@ -48,7 +48,7 @@
   --font-mono: "Consolas", "Monaco", monospace;
   --font-sans: "Lato", sans-serif;
   /* Hand-drawn-style marker swipe (SVG), stretched under .about-highlight text */
-  --about-marker-highlight: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%2012%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%2346b96c%22%20fill-opacity%3D%220.3%22%20d%3D%22M0%2C7.5%20C18%2C3.5%2038%2C9%2058%2C5.5%20C76%2C3%2092%2C7%20100%2C6.5%20L100%2C11%20C78%2C12%2048%2C11.5%2022%2C11%20L0%2C10.2%20Z%22%2F%3E%3C%2Fsvg%3E");
+  --about-marker-highlight: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%2012%22%20preserveAspectRatio%3D%22none%22%3E%3Cpath%20fill%3D%22%2346b96c%22%20fill-opacity%3D%220.52%22%20d%3D%22M0%2C7.5%20C18%2C3.5%2038%2C9%2058%2C5.5%20C76%2C3%2092%2C7%20100%2C6.5%20L100%2C11%20C78%2C12%2048%2C11.5%2022%2C11%20L0%2C10.2%20Z%22%2F%3E%3C%2Fsvg%3E");
 }
 
 * {
