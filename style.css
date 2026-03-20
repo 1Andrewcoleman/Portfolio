@@ -574,6 +574,10 @@ html.fog-reveal .section-scroll-layer::after {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
   }
+
+  .about-intro h2::after {
+    transition: none;
+  }
 }
 
 /* ── Glass card utility ── */
@@ -604,6 +608,10 @@ html.fog-reveal .section-scroll-layer::after {
   max-width: 1100px;
   padding: 48px 56px;
   gap: 40px;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .about-intro {
@@ -617,6 +625,21 @@ html.fog-reveal .section-scroll-layer::after {
   letter-spacing: 0.05em;
   margin-bottom: 20px;
   color: var(--text-primary);
+  position: relative;
+  display: inline-block;
+}
+
+.about-intro h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent), rgba(70, 185, 108, 0.15));
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s ease;
 }
 
 .about-intro p {
@@ -654,12 +677,6 @@ html.fog-reveal .section-scroll-layer::after {
   cursor: pointer;
 }
 
-.about-photo img:hover {
-  outline: var(--b) solid var(--c);
-  outline-offset: calc(var(--s) / -2);
-  --_i: calc(100% - 2 * var(--s));
-}
-
 /* Detail cards grid */
 .about-details {
   display: grid;
@@ -671,6 +688,13 @@ html.fog-reveal .section-scroll-layer::after {
 
 .detail-card {
   padding: 28px 24px;
+}
+
+#about-me .detail-card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .detail-card h3 {
@@ -728,6 +752,7 @@ html.fog-reveal .section-scroll-layer::after {
 .timeline-school {
   font-size: 0.85rem;
   color: var(--text-muted);
+  transition: color 0.2s ease;
 }
 
 /* Skills Pills */
@@ -746,6 +771,81 @@ html.fog-reveal .section-scroll-layer::after {
   color: var(--text-secondary);
   font-weight: 400;
   white-space: nowrap;
+}
+
+@keyframes about-pill-glow {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+
+  50% {
+    box-shadow: 0 0 14px rgba(70, 185, 108, 0.4);
+  }
+}
+
+.about-highlight {
+  color: inherit;
+  border-bottom: 1px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* About section — hover interactions (fine pointers only) */
+@media (hover: hover) {
+  .about-card:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(18, 24, 34, 0.62);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+  }
+
+  #about-me .detail-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow:
+      0 14px 36px rgba(0, 0, 0, 0.32),
+      0 0 0 1px rgba(70, 185, 108, 0.12);
+  }
+
+  .about-intro h2:hover::after {
+    transform: scaleX(1);
+  }
+
+  .about-photo img:hover {
+    outline: var(--b) solid var(--c);
+    outline-offset: calc(var(--s) / -2);
+    --_i: calc(100% - 2 * var(--s));
+  }
+
+  .timeline-item:hover .timeline-school {
+    color: var(--accent);
+  }
+
+  .skill-pills .pill:hover {
+    animation: about-pill-glow 0.65s ease-out 1;
+  }
+
+  .about-highlight:hover {
+    color: var(--accent);
+    border-bottom-color: rgba(70, 185, 108, 0.45);
+  }
+
+  /* Beat .about-personal color !important */
+  .about-personal .about-highlight:hover {
+    color: var(--accent) !important;
+    border-bottom-color: rgba(70, 185, 108, 0.45);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  #about-me .detail-card:hover {
+    transform: none;
+  }
+
+  .skill-pills .pill:hover {
+    animation: none !important;
+  }
 }
 
 /* Research List */
