@@ -880,8 +880,31 @@ html.fog-reveal .section-scroll-layer::after {
   content: "\203A";
   position: absolute;
   left: 0;
+  top: 0.05em;
   color: var(--accent);
   font-weight: bold;
+  display: block;
+  transition: transform 0.22s ease, color 0.22s ease;
+}
+
+.research-list li:hover::before {
+  transform: translateX(5px);
+  color: var(--accent-hover);
+}
+
+.research-list li:hover {
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .research-list li::before {
+    transition: none;
+  }
+
+  .research-list li:hover::before {
+    transform: none;
+    color: var(--accent);
+  }
 }
 
 /* ── Vertical Navbar ── */
