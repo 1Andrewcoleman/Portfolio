@@ -815,10 +815,12 @@ document.addEventListener("DOMContentLoaded", function () {
     contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
 
+      var honeypotEl = document.getElementById("website");
       var formData = {
         name: document.getElementById("name").value,
         email: document.getElementById("email").value,
         message: document.getElementById("message").value,
+        website: honeypotEl ? honeypotEl.value : "",
       };
 
       fetch("/api/send-email", {

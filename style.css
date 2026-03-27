@@ -299,6 +299,19 @@ body {
   margin-bottom: 14px;
 }
 
+/* Honeypot — visually hidden from real users, still present in DOM for bots */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  tab-index: -1;
+}
+
 .form-control,
 textarea {
   display: block;
