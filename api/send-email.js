@@ -1,29 +1,34 @@
-const express = require("express");
 const nodemailer = require("nodemailer");
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+/*
+ * Rate-limiting note
+ * ──────────────────
+ * In-memory rate limiting (e.g. a Map counting requests per IP) does NOT work
+ * on serverless platforms like Vercel — every cold-start gets a fresh process
+ * and the counter resets.  Effective rate limiting for this endpoint should be
+ * configured at the edge:
+ *
+ *   • Vercel WAF / Firewall Rules (Settings → Firewall)
+ *   • Cloudflare Rate Limiting Rules
+ *
+ * The honeypot field, input validation, and length limits below still provide
+ * meaningful protection against casual abuse.
+ */
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+/* ── CORS ────────────────────────────────────────────────────────────────────
+ * Set ALLOWED_ORIGIN in your Vercel environment variables to your production
+ * domain (e.g. "https://andrewcoleman.dev").  When the variable is present
+ * the API will include Access-Control-Allow-Origin for that origin only;
+ * when absent no CORS header is sent (same-origin requests still work).
+ * ──────────────────────────────────────────────────────────────────────────── */
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "";
 
-// Simple in-memory rate limiter: max 3 submissions per IP per 10 minutes
-const rateLimitMap = new Map();
-const RATE_LIMIT_MAX = 3;
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
-
-function isRateLimited(ip) {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip) || { count: 0, windowStart: now };
-
-  if (now - entry.windowStart > RATE_LIMIT_WINDOW_MS) {
-    entry.count = 0;
-    entry.windowStart = now;
+function setCorsHeaders(res) {
+  if (ALLOWED_ORIGIN) {
+    res.setHeader("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   }
-
-  entry.count += 1;
-  rateLimitMap.set(ip, entry);
-  return entry.count > RATE_LIMIT_MAX;
 }
 
 // Strip characters that could be used for email header injection (\r, \n)
@@ -36,16 +41,20 @@ function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value));
 }
 
-app.post("/api/send-email", async (req, res) => {
-  const ip =
-    req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
-    req.socket.remoteAddress;
+// ── Core handler (Vercel serverless + local Express) ────────────────────────
+async function handler(req, res) {
+  setCorsHeaders(res);
 
-  if (isRateLimited(ip)) {
-    return res.status(429).send("Too many requests. Please try again later.");
+  // Preflight
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
   }
 
-  const { name, email, message, website } = req.body;
+  if (req.method !== "POST") {
+    return res.status(405).send("Method not allowed.");
+  }
+
+  const { name, email, message, website } = req.body || {};
 
   // Honeypot check — bots fill the hidden "website" field, humans don't
   if (website && website.trim() !== "") {
@@ -104,8 +113,22 @@ app.post("/api/send-email", async (req, res) => {
     console.error("Email error:", error.message);
     res.status(500).send("Error sending email");
   }
-});
+}
 
-app.listen(PORT, () => {
-  console.log(`API server running on port ${PORT}`);
-});
+// ── Vercel serverless export ────────────────────────────────────────────────
+module.exports = handler;
+
+// ── Local development server ────────────────────────────────────────────────
+if (require.main === module) {
+  const express = require("express");
+  const app = express();
+  const PORT = process.env.PORT || 3001;
+
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  app.all("/api/send-email", handler);
+
+  app.listen(PORT, () => {
+    console.log(`API server running on http://localhost:${PORT}`);
+  });
+}

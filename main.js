@@ -810,6 +810,41 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 5000);
   }
 
+  /* ═══════════════════════════════════════
+     PII Obfuscation
+     Render contact details via JS so plain-text phone / email
+     never appear in the static HTML (defeats naive scrapers).
+     ═══════════════════════════════════════ */
+  (function renderContactInfo() {
+    var p = [String.fromCharCode(55), String.fromCharCode(55),
+             String.fromCharCode(48), String.fromCharCode(53),
+             String.fromCharCode(48), String.fromCharCode(51),
+             String.fromCharCode(52), String.fromCharCode(51),
+             String.fromCharCode(49), String.fromCharCode(54)];
+    var raw = p.join("");
+    var phone = "(" + raw.slice(0, 3) + ") " + raw.slice(3, 6) + "-" + raw.slice(6);
+
+    var phoneEl = document.querySelector('[data-info="phone"]');
+    if (phoneEl) {
+      var a = document.createElement("a");
+      a.href = "tel:1-" + raw.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3");
+      a.title = "Give me a call";
+      a.textContent = phone;
+      phoneEl.appendChild(a);
+    }
+
+    var parts = ["and", "rewc", "31", "@", "icl", "oud", ".", "com"];
+    var email = parts.join("");
+    var emailEl = document.querySelector('[data-info="email"]');
+    if (emailEl) {
+      var a2 = document.createElement("a");
+      a2.href = "mai" + "lto:" + email;
+      a2.title = "Send me an email";
+      a2.textContent = email;
+      emailEl.appendChild(a2);
+    }
+  })();
+
   var contactForm = document.getElementById("contact-form");
   if (contactForm) {
     contactForm.addEventListener("submit", function (e) {
