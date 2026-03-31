@@ -7,11 +7,17 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "npx serve -l 3000",
+    "dev": "node server.dev.js",
+    "dev:api": "node api/send-email.js",
+    "dev:static": "npx serve -l 3000",
     "start": "node api/send-email.js"
   },
   "dependencies": {
     "express": "^4.21.2",
     "nodemailer": "^6.9.16"
+  },
+  "devDependencies": {
+    "http-proxy-middleware": "^3.0.5",
+    "serve": "^14.2.6"
   }
 }
