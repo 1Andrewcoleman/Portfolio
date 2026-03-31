@@ -19,12 +19,12 @@ const app = express();
 const PORT = 3000;
 const API_PORT = 3001;
 
-// Proxy /api requests to the API server
+// Proxy /api requests to the API server (keep full path intact)
 app.use(
-  "/api",
   createProxyMiddleware({
     target: `http://localhost:${API_PORT}`,
     changeOrigin: true,
+    pathFilter: "/api/**",
   })
 );
 
