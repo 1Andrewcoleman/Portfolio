@@ -1,0 +1,6 @@
+# Security policy for andrewcoleman.dev
+# See https://securitytxt.org/ (RFC 9116)
+
+Contact: https://andrewcoleman.dev/#contact
+Expires: 2027-04-02T00:00:00.000Z
+Preferred-Languages: en
