@@ -847,8 +847,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var contactForm = document.getElementById("contact-form");
   if (contactForm) {
+    var SUBMIT_COOLDOWN_MS = 30000;
+    var lastSubmitTime = 0;
+
     contactForm.addEventListener("submit", function (e) {
       e.preventDefault();
+
+      var now = Date.now();
+      if (now - lastSubmitTime < SUBMIT_COOLDOWN_MS) {
+        var secsLeft = Math.ceil((SUBMIT_COOLDOWN_MS - (now - lastSubmitTime)) / 1000);
+        showNotification("Please wait " + secsLeft + "s before sending again.", false);
+        return;
+      }
+
+      var submitBtn = document.getElementById("submit");
+      if (submitBtn) submitBtn.disabled = true;
 
       var honeypotEl = document.getElementById("website");
       var formData = {
@@ -857,6 +870,8 @@ document.addEventListener("DOMContentLoaded", function () {
         message: document.getElementById("message").value,
         website: honeypotEl ? honeypotEl.value : "",
       };
+
+      lastSubmitTime = now;
 
       fetch("/api/send-email", {
         method: "POST",
@@ -878,6 +893,9 @@ document.addEventListener("DOMContentLoaded", function () {
             "Failed to send email. Please try again later.",
             false
           );
+        })
+        .finally(function () {
+          if (submitBtn) submitBtn.disabled = false;
         });
     });
   }
