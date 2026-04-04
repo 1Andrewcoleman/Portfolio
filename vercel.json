@@ -1,7 +1,15 @@
 {
   "routes": [
     {
-      "src": "/\\.env(\\..+)?$",
+      "src": ".*\\.env(\\..+)?(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": ".*\\.php(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": "/(_environment|_profiler)(/.*)?$",
       "mitigate": { "action": "deny" }
     },
     {
