@@ -9,11 +9,11 @@
       "mitigate": { "action": "deny" }
     },
     {
-      "src": "/(_environment|_profiler)(/.*)?$",
+      "src": "/(actuator|_next|debug/default|_environment|_profiler)(/.*)?$",
       "mitigate": { "action": "deny" }
     },
     {
-      "src": "/(wp-admin|wp-login|xmlrpc|phpmyadmin|cgi-bin|\\.git|\\.svn|\\.htaccess|\\.htpasswd|\\.DS_Store|Thumbs\\.db|composer\\.(json|lock)|package-lock\\.json|\\.npmrc|\\.dockerenv|Dockerfile|docker-compose)(\\..+)?(/.*)?$",
+      "src": "/(wp-admin|wp-login|xmlrpc|phpmyadmin|cgi-bin|\\.git|\\.svn|\\.htaccess|\\.htpasswd|\\.DS_Store|Thumbs\\.db|composer\\.(json|lock)|package-lock\\.json|\\.npmrc|\\.dockerenv|Dockerfile|docker-compose|\\.vercel)(\\..+)?(/.*)?$",
       "mitigate": { "action": "deny" }
     }
   ],
