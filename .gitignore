@@ -1,3 +1,12 @@
 node_modules/
 .env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
