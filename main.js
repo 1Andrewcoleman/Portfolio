@@ -921,7 +921,17 @@ document.addEventListener("DOMContentLoaded", function () {
       var sendText = submitBtn ? submitBtn.querySelector(".send-text") : null;
       var originalText = sendText ? sendText.textContent : "";
       if (submitBtn) submitBtn.disabled = true;
-      if (sendText) sendText.textContent = "SOLVING...";
+
+      var dotFrames = ["SENDING.", "SENDING..", "SENDING..."];
+      var dotIndex = 0;
+      var dotInterval = null;
+      if (sendText) {
+        sendText.textContent = dotFrames[0];
+        dotInterval = setInterval(function () {
+          dotIndex = (dotIndex + 1) % dotFrames.length;
+          sendText.textContent = dotFrames[dotIndex];
+        }, 350);
+      }
 
       var honeypotEl = document.getElementById("website");
       var formData = {
@@ -934,8 +944,6 @@ document.addEventListener("DOMContentLoaded", function () {
       var challenge = Date.now() + ":" + Math.random().toString(36).slice(2);
 
       powSolve(challenge, POW_DIFFICULTY).then(function (proof) {
-        if (sendText) sendText.textContent = "SENDING...";
-
         formData.pow = {
           challenge: challenge,
           nonce: proof.nonce,
@@ -968,6 +976,7 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         })
         .finally(function () {
+          if (dotInterval) clearInterval(dotInterval);
           if (submitBtn) submitBtn.disabled = false;
           if (sendText) sendText.textContent = originalText;
         });
