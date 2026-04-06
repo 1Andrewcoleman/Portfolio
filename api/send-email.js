@@ -158,12 +158,72 @@ async function handler(req, res) {
     },
   });
 
+  const textBody = [
+    `New message from your portfolio contact form`,
+    ``,
+    `From:    ${safeName}`,
+    `Email:   ${safeEmail}`,
+    `Date:    ${new Date().toLocaleString("en-US", { timeZone: "America/New_York", dateStyle: "full", timeStyle: "short" })}`,
+    ``,
+    `─────────────────────────────────────`,
+    ``,
+    message,
+    ``,
+    `─────────────────────────────────────`,
+    `This message was sent via andrewcoleman.dev`,
+  ].join("\n");
+
+  const htmlBody = `
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#f4f4f7;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f7;padding:32px 0">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
+        <tr>
+          <td style="background:linear-gradient(135deg,#0f1117 0%,#1a1d2e 100%);padding:28px 32px">
+            <h1 style="margin:0;font-size:18px;font-weight:600;color:#ffffff;letter-spacing:0.5px">New Contact Form Message</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:28px 32px">
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
+              <tr>
+                <td style="padding:8px 0;color:#6b7280;font-size:13px;width:60px;vertical-align:top">From</td>
+                <td style="padding:8px 0;color:#111827;font-size:15px;font-weight:600">${safeName}</td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0;color:#6b7280;font-size:13px;vertical-align:top">Email</td>
+                <td style="padding:8px 0"><a href="mailto:${safeEmail}" style="color:#2563eb;font-size:15px;text-decoration:none">${safeEmail}</a></td>
+              </tr>
+              <tr>
+                <td style="padding:8px 0;color:#6b7280;font-size:13px;vertical-align:top">Date</td>
+                <td style="padding:8px 0;color:#111827;font-size:14px">${new Date().toLocaleString("en-US", { timeZone: "America/New_York", dateStyle: "full", timeStyle: "short" })}</td>
+              </tr>
+            </table>
+            <div style="border-top:1px solid #e5e7eb;padding-top:20px">
+              <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.5px">Message</p>
+              <div style="color:#1f2937;font-size:15px;line-height:1.7;white-space:pre-wrap">${message.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:16px 32px;background:#f9fafb;border-top:1px solid #e5e7eb">
+            <p style="margin:0;font-size:12px;color:#9ca3af;text-align:center">Sent via <a href="https://andrewcoleman.dev" style="color:#6b7280;text-decoration:none">andrewcoleman.dev</a> contact form</p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+
   const mailOptions = {
     from: process.env.ICLOUD_EMAIL,
     replyTo: safeEmail,
     to: process.env.ICLOUD_EMAIL,
-    subject: `Website Email from: ${safeName}`,
-    text: `Message from: ${safeName} <${safeEmail}>\n\n${message}`,
+    subject: `${safeName} — via andrewcoleman.dev`,
+    text: textBody,
+    html: htmlBody,
   };
 
   try {
