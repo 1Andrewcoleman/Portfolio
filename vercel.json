@@ -1,19 +1,47 @@
 {
   "routes": [
     {
-      "src": ".*\\.env(\\..+)?(/.*)?$",
+      "src": ".*\\.(env|php|asp|aspx|jsp|cgi|pl|py|rb|sh|bash|bak|old|orig|save|swp|swo|tmp|temp|log|sql|sqlite|db|mdb|ini|cfg|conf|config|yml|yaml|toml|xml|pem|key|crt|csr|pfx|p12|jks|htpasswd|htaccess|npmrc|dockerignore|DS_Store)(\\..+)?(/.*)?$",
       "mitigate": { "action": "deny" }
     },
     {
-      "src": ".*\\.php(/.*)?$",
+      "src": "/\\.(git|svn|hg|bzr|env|ssh|aws|docker|vscode|idea|vercel|netlify|cache|config|bash_history|bashrc|profile|mysql_history|sh_history|node_repl_history|well-known/acme-challenge)(/.*)?$",
       "mitigate": { "action": "deny" }
     },
     {
-      "src": "/(actuator|_next|debug/default|_environment|_profiler)(/.*)?$",
+      "src": "/(wp-admin|wp-login|wp-content|wp-includes|wp-json|xmlrpc|wordpress|phpmyadmin|phpMyAdmin|pma|adminer|mysql|mysqladmin|pgadmin|phppgadmin|phpinfo|info\\.php)(\\..+)?(/.*)?$",
       "mitigate": { "action": "deny" }
     },
     {
-      "src": "/(wp-admin|wp-login|xmlrpc|phpmyadmin|cgi-bin|\\.git|\\.svn|\\.htaccess|\\.htpasswd|\\.DS_Store|Thumbs\\.db|composer\\.(json|lock)|package-lock\\.json|\\.npmrc|\\.dockerenv|Dockerfile|docker-compose|\\.vercel)(\\..+)?(/.*)?$",
+      "src": "/(admin|administrator|adm|cpanel|cPanel|plesk|webmail|panel|manager|dashboard|controlpanel|backend|backoffice|server-status|server-info)(\\..+)?(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": "/(cgi-bin|cgi-sys|cgi-mod|fcgi-bin|bin|sbin|scripts|shell|cmd|console|terminal|exec)(\\..+)?(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": "/(actuator|_next|_nuxt|__next|debug|_profiler|_environment|telescope|elmah|trace|healthcheck|metrics|graphql|graphiql|swagger|api-docs|openapi)(\\..+)?(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": "/(vendor|node_modules|bower_components|composer|artisan|storage|laravel|symfony|yii|codeigniter|igniter|craft|drupal|joomla|magento|moodle|mediawiki)(\\..+)?(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": "/(backup|backups|bak|old|temp|tmp|test|testing|dev|staging|demo|sample|example|install|setup|config|configuration|data|database|db|dump|export|import|upload|uploads|private|secret|secrets|internal|hidden|restricted|confidential|archive|archives)(\\..+)?(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": "/(Dockerfile|docker-compose|Makefile|Rakefile|Gemfile|Gruntfile|Gulpfile|Vagrantfile|Procfile|Pipfile|Thumbs\\.db|desktop\\.ini|LICENSE|README|CHANGELOG|TODO|INSTALL|CONTRIBUTING|AUTHORS|AGENTS)(\\..+)?(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": "/(login|signin|signup|register|auth|oauth|sso|saml|oidc|cas|logout|logoff|session|account|accounts|user|users|profile|password|passwd|reset|recover|forgot)(\\..+)?(/.*)?$",
+      "mitigate": { "action": "deny" }
+    },
+    {
+      "src": "^/(package-lock\\.json|\\.dockerenv|\\.npmrc|yarn\\.lock|pnpm-lock\\.yaml|composer\\.json|composer\\.lock|Gemfile(\\.lock)?|Pipfile(\\.lock)?|requirements\\.txt|go\\.sum|Cargo\\.lock|shrinkwrap\\.yaml|npm-shrinkwrap\\.json)$",
       "mitigate": { "action": "deny" }
     }
   ],
