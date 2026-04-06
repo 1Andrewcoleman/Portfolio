@@ -854,50 +854,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function powSolve(challenge, difficulty) {
     return new Promise(function (resolve) {
-      var target = Math.pow(2, 256 - difficulty);
-      var nonce = 0;
-      var batchSize = 5000;
-
-      function mine() {
-        for (var i = 0; i < batchSize; i++) {
-          var input = challenge + ":" + nonce;
-          var hashBuffer = null;
-
-          try {
-            hashBuffer = new TextEncoder().encode(input);
-          } catch (_) {
-            nonce++;
-            continue;
-          }
-
-          crypto.subtle.digest("SHA-256", hashBuffer).then(function (buf) {
-            var arr = new Uint8Array(buf);
-            var leadingZeros = 0;
-            for (var b = 0; b < arr.length; b++) {
-              if (arr[b] === 0) { leadingZeros += 8; }
-              else {
-                var bits = 7;
-                while (bits > 0 && !(arr[b] & (1 << bits))) {
-                  leadingZeros++;
-                  bits--;
-                }
-                break;
-              }
-            }
-            if (leadingZeros >= difficulty) {
-              resolve({ nonce: parseInt(input.split(":").pop()), hash: Array.from(arr).map(function (x) { return x.toString(16).padStart(2, "0"); }).join("") });
-            }
-          });
-          nonce++;
-        }
-        setTimeout(mine, 0);
-      }
-      mine();
-    });
-  }
-
-  function powSolveSync(challenge, difficulty) {
-    return new Promise(function (resolve) {
       var nonce = 0;
       var batchSize = 2000;
 
@@ -977,7 +933,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       var challenge = Date.now() + ":" + Math.random().toString(36).slice(2);
 
-      powSolveSync(challenge, POW_DIFFICULTY).then(function (proof) {
+      powSolve(challenge, POW_DIFFICULTY).then(function (proof) {
         if (sendText) sendText.textContent = "SENDING...";
 
         formData.pow = {
