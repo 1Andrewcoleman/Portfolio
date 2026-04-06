@@ -845,6 +845,107 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   })();
 
+  /* ═══════════════════════════════════════
+     Proof-of-Work Challenge (SHA-256)
+     Forces ~1-2s of CPU work per submission.
+     Automated loops become economically pointless.
+     ═══════════════════════════════════════ */
+  var POW_DIFFICULTY = 18;
+
+  function powSolve(challenge, difficulty) {
+    return new Promise(function (resolve) {
+      var target = Math.pow(2, 256 - difficulty);
+      var nonce = 0;
+      var batchSize = 5000;
+
+      function mine() {
+        for (var i = 0; i < batchSize; i++) {
+          var input = challenge + ":" + nonce;
+          var hashBuffer = null;
+
+          try {
+            hashBuffer = new TextEncoder().encode(input);
+          } catch (_) {
+            nonce++;
+            continue;
+          }
+
+          crypto.subtle.digest("SHA-256", hashBuffer).then(function (buf) {
+            var arr = new Uint8Array(buf);
+            var leadingZeros = 0;
+            for (var b = 0; b < arr.length; b++) {
+              if (arr[b] === 0) { leadingZeros += 8; }
+              else {
+                var bits = 7;
+                while (bits > 0 && !(arr[b] & (1 << bits))) {
+                  leadingZeros++;
+                  bits--;
+                }
+                break;
+              }
+            }
+            if (leadingZeros >= difficulty) {
+              resolve({ nonce: parseInt(input.split(":").pop()), hash: Array.from(arr).map(function (x) { return x.toString(16).padStart(2, "0"); }).join("") });
+            }
+          });
+          nonce++;
+        }
+        setTimeout(mine, 0);
+      }
+      mine();
+    });
+  }
+
+  function powSolveSync(challenge, difficulty) {
+    return new Promise(function (resolve) {
+      var nonce = 0;
+      var batchSize = 2000;
+
+      function checkBatch() {
+        var promises = [];
+        for (var i = 0; i < batchSize; i++) {
+          var input = challenge + ":" + nonce;
+          var encoded = new TextEncoder().encode(input);
+          promises.push(
+            (function (n) {
+              return crypto.subtle.digest("SHA-256", new TextEncoder().encode(challenge + ":" + n)).then(function (buf) {
+                return { nonce: n, arr: new Uint8Array(buf) };
+              });
+            })(nonce)
+          );
+          nonce++;
+        }
+
+        Promise.all(promises).then(function (results) {
+          for (var r = 0; r < results.length; r++) {
+            var arr = results[r].arr;
+            var leadingZeros = 0;
+            for (var b = 0; b < arr.length; b++) {
+              if (arr[b] === 0) { leadingZeros += 8; }
+              else {
+                var bits = 7;
+                while (bits > 0 && !(arr[b] & (1 << bits))) {
+                  leadingZeros++;
+                  bits--;
+                }
+                break;
+              }
+            }
+            if (leadingZeros >= difficulty) {
+              resolve({
+                nonce: results[r].nonce,
+                hash: Array.from(arr).map(function (x) { return x.toString(16).padStart(2, "0"); }).join("")
+              });
+              return;
+            }
+          }
+          setTimeout(checkBatch, 0);
+        });
+      }
+      checkBatch();
+    });
+  }
+
   var contactForm = document.getElementById("contact-form");
   if (contactForm) {
     var SUBMIT_COOLDOWN_MS = 30000;
@@ -861,7 +962,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       var submitBtn = document.getElementById("submit");
+      var sendText = submitBtn ? submitBtn.querySelector(".send-text") : null;
+      var originalText = sendText ? sendText.textContent : "";
       if (submitBtn) submitBtn.disabled = true;
+      if (sendText) sendText.textContent = "SOLVING...";
 
       var honeypotEl = document.getElementById("website");
       var formData = {
@@ -871,12 +975,25 @@ document.addEventListener("DOMContentLoaded", function () {
         website: honeypotEl ? honeypotEl.value : "",
       };
 
-      lastSubmitTime = now;
+      var challenge = Date.now() + ":" + Math.random().toString(36).slice(2);
 
-      fetch("/api/send-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      powSolveSync(challenge, POW_DIFFICULTY).then(function (proof) {
+        if (sendText) sendText.textContent = "SENDING...";
+
+        formData.pow = {
+          challenge: challenge,
+          nonce: proof.nonce,
+          hash: proof.hash,
+          difficulty: POW_DIFFICULTY,
+        };
+
+        lastSubmitTime = Date.now();
+
+        return fetch("/api/send-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
       })
         .then(function (response) {
           if (!response.ok) throw new Error("Network response was not ok");
@@ -896,6 +1013,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .finally(function () {
           if (submitBtn) submitBtn.disabled = false;
+          if (sendText) sendText.textContent = originalText;
         });
     });
   }
